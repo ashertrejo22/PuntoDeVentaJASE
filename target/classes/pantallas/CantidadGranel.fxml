@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="166.0" prefWidth="354.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.uacm.puntodeventa.CantidadGranelController">
+    <children>
+        <Pane prefHeight="48.0" prefWidth="354.0" style="-fx-background-color: #00502b;">
+            <children>
+                <Label layoutX="90.0" layoutY="13.0" text="Producto a Granel" textFill="WHITE">
+                    <font>
+                        <Font name="Arial Bold" size="20.0" />
+                    </font>
+                </Label>
+            </children>
+        </Pane>
+        <Button layoutX="68.0" layoutY="112.0" mnemonicParsing="false" onAction="#clickAceptar" prefHeight="40.0" prefWidth="86.0" style="-fx-background-color: #146551;" text="Aceptar" textFill="WHITE">
+            <font>
+                <Font name="Arial" size="14.0" />
+            </font>
+        </Button>
+        <GridPane layoutX="17.0" layoutY="58.0" prefHeight="54.0" prefWidth="319.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label text="Ingresa la cantidad:">
+                    <font>
+                        <Font name="Arial Bold" size="12.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="txtCantidad" promptText="Kg/g" GridPane.columnIndex="1" />
+            </children>
+        </GridPane>
+        <Button layoutX="203.0" layoutY="112.0" mnemonicParsing="false" onAction="#clickCancelar" prefHeight="40.0" prefWidth="87.0" style="-fx-background-color: #CF2E2B;" text="Cancelar" textFill="WHITE">
+            <font>
+                <Font name="Arial" size="14.0" />
+            </font>
+        </Button>
+    </children>
+</AnchorPane>

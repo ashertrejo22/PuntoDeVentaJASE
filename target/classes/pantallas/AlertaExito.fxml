@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="170.0" prefWidth="350.0" style="-fx-background-color: WHITE;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.uacm.puntodeventa.AlertaExitoController">
+   <children>
+      <Pane layoutY="-1.0" prefHeight="66.0" prefWidth="350.0" style="-fx-background-color: #00502b;">
+         <children>
+            <Label layoutX="144.0" layoutY="22.0" text="¡Exito!" textFill="WHITE">
+               <font>
+                  <Font name="Arial Bold" size="20.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Label layoutX="25.0" layoutY="75.0" text="La recarga se realizó correctamente">
+         <font>
+            <Font name="Arial" size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnAceptar" layoutX="132.0" layoutY="123.0" mnemonicParsing="false" onAction="#cerrarVentana" style="-fx-background-color: #146551;" text="Aceptar" textFill="WHITE">
+         <font>
+            <Font name="Arial" size="18.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
+
+<AnchorPane prefHeight="380.0" prefWidth="580.0"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.uacm.puntodeventa.ActualizarController">
+
+   <children>
+
+      <Pane prefHeight="380.0" prefWidth="580.0" style="-fx-background-color: White;">
+
+         <children>
+
+            <!-- HEADER -->
+            <Pane layoutX="-19.0" prefHeight="63.0" prefWidth="620.0"
+                  style="-fx-background-color: #00502b;">
+               <children>
+                  <Label layoutX="150.0" layoutY="18.0"
+                         text="Actualizar Producto"
+                         textFill="WHITE">
+                     <font>
+                        <Font name="Arial Bold" size="24.0"/>
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+
+            <!-- CAMPOS -->
+            <Label layoutX="40.0" layoutY="80.0" text="Nombre del producto">
+               <font><Font name="Arial Bold" size="12.0"/></font>
+            </Label>
+
+            <TextField fx:id="txtFieldNombre"
+                       layoutX="220.0" layoutY="75.0"
+                       prefWidth="180.0"/>
+
+            <Label layoutX="40.0" layoutY="120.0" text="Precio del proveedor">
+               <font><Font name="Arial Bold" size="12.0"/></font>
+            </Label>
+
+            <TextField fx:id="txtFieldPrecioProv"
+                       layoutX="220.0" layoutY="115.0"
+                       prefWidth="180.0"/>
+
+            <Label layoutX="40.0" layoutY="160.0" text="Tipo de producto">
+               <font><Font name="Arial Bold" size="12.0"/></font>
+            </Label>
+
+            <ComboBox fx:id="comboBoxTipoProducto"
+                      layoutX="220.0" layoutY="155.0"
+                      prefWidth="180.0"
+                      promptText="Selecciona"/>
+
+            <Label layoutX="40.0" layoutY="200.0" text="Caducidad">
+               <font><Font name="Arial Bold" size="12.0"/></font>
+            </Label>
+
+            <DatePicker fx:id="datePickerCaducidad"
+                        layoutX="220.0" layoutY="195.0"
+                        prefWidth="180.0"/>
+
+            <Label layoutX="40.0" layoutY="240.0" text="Cantidad">
+               <font><Font name="Arial Bold" size="12.0"/></font>
+            </Label>
+
+            <TextField fx:id="txtFieldCantidad"
+                       layoutX="220.0" layoutY="235.0"
+                       prefWidth="180.0"/>
+
+            <!-- IMAGEN -->
+            <Label layoutX="40.0" layoutY="280.0" text="Imagen del producto">
+               <font><Font name="Arial Bold" size="12.0"/></font>
+            </Label>
+
+            <Button fx:id="btnSeleccionarImagen"
+                    layoutX="220.0" layoutY="275.0"
+                    prefWidth="180.0"
+                    prefHeight="30.0"
+                    text="Seleccionar"
+                    onAction="#seleccionarImagen"
+                    style="-fx-background-color: #146551; -fx-text-fill: white;"/>
+
+            <ImageView fx:id="previewImagen"
+                       layoutX="420.0"
+                       layoutY="80.0"
+                       fitWidth="130.0"
+                       fitHeight="130.0"
+                       preserveRatio="false"
+                       style="-fx-border-color: #CCCCCC;"/>
+
+            <!-- BOTONES -->
+            <Button fx:id="buttonActualizar"
+                    layoutX="220.0"
+                    layoutY="320.0"
+                    prefWidth="100.0"
+                    text="Actualizar"
+                    onAction="#actualizarProductoExitoso"
+                    style="-fx-background-color: #146551;"
+                    textFill="WHITE">
+               <font><Font name="Arial" size="14.0"/></font>
+            </Button>
+
+            <Button fx:id="buttonCancelar"
+                    layoutX="340.0"
+                    layoutY="320.0"
+                    prefWidth="100.0"
+                    text="Cancelar"
+                    onAction="#cerrarVentana"
+                    style="-fx-background-color: #c20000;"
+                    textFill="WHITE">
+               <font><Font name="Arial" size="14.0"/></font>
+            </Button>
+
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
