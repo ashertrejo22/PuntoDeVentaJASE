@@ -68,7 +68,6 @@ public class PantallaPrincipalController implements Initializable {
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
         
-        // Regla para que las columnas se ajusten automáticamente al maximizar
         tableViewCarrito.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         if (lblFecha != null) {
@@ -96,7 +95,6 @@ public class PantallaPrincipalController implements Initializable {
                     tableViewCarrito.refresh();
                     return;
                 }
-
                 if (nuevaCantidad <= 0) {
                     throw new IllegalArgumentException("La cantidad debe ser mayor a 0.");
                 }
@@ -113,7 +111,6 @@ public class PantallaPrincipalController implements Initializable {
                 item.setCantidad(nuevaCantidad);
                 actualizarTotales();
                 tableViewCarrito.refresh();
-
             } catch (IllegalArgumentException | IllegalStateException e) {
                 mostrarAlerta(e.getMessage());
                 tableViewCarrito.refresh(); 
@@ -146,9 +143,7 @@ public class PantallaPrincipalController implements Initializable {
         busquedaCarrito.textProperty().addListener((obs, oldVal, newVal) -> {
             String lower = (newVal == null) ? "" : newVal.toLowerCase();
             filteredProducts.setPredicate(p -> {
-                if (lower.isEmpty()) {
-                    return true;
-                }
+                if (lower.isEmpty()) return true;
                 return p.getNombre().toLowerCase().contains(lower)
                         || String.valueOf(p.getID_producto()).contains(lower);
             });
@@ -174,30 +169,24 @@ public class PantallaPrincipalController implements Initializable {
     private void agregarProductoDirecto(Producto seleccionado) throws IllegalStateException {
         double cantidadAAgregar = 1.0; 
 
-        // Verificamos si es a Granel usando la herencia
         if (seleccionado instanceof org.uacm.puntodeventa.Clases.ProductoGranel || "Granel".equalsIgnoreCase(seleccionado.getTipo())) {
             try {
                 FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/CantidadGranel.fxml")); 
                 Parent root = loader.load();
-                
                 CantidadGranelController controller = loader.getController();
-                
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));
                 stage.setTitle("Producto a Granel");
                 stage.initModality(javafx.stage.Modality.APPLICATION_MODAL); 
                 stage.setResizable(false);
-                
                 stage.showAndWait(); 
                 
                 double peso = controller.getCantidadFinal();
-                
                 if (peso == -1.0) {
-                    return; // El usuario canceló la operación
+                    return; 
                 } else {
                     cantidadAAgregar = peso; 
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new IllegalStateException("Error al abrir ventana de cantidad a granel.");
@@ -244,7 +233,6 @@ public class PantallaPrincipalController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/Login.fxml"));
             Parent root = loader.load();
-
             Stage stage = new Stage();
             stage.setTitle("Login");
             stage.setScene(new Scene(root, 380, 520));
@@ -264,7 +252,6 @@ public class PantallaPrincipalController implements Initializable {
             if (texto.isEmpty()) {
                 throw new IllegalArgumentException("/pantallas/OpcionValida.fxml");
             }
-
             Producto seleccionado = list.stream()
                     .filter(p -> p.getNombre().equalsIgnoreCase(texto) || String.valueOf(p.getID_producto()).equals(texto))
                     .findFirst()
@@ -277,7 +264,6 @@ public class PantallaPrincipalController implements Initializable {
             agregarProductoDirecto(seleccionado);
             busquedaCarrito.clear();
             suggestionPopup.hide();
-
         } catch (IllegalArgumentException | IllegalStateException e) {
             if (e.getMessage() != null && e.getMessage().startsWith("/pantallas/")) {
                 mostrarMensaje(e.getMessage());
@@ -298,78 +284,50 @@ public class PantallaPrincipalController implements Initializable {
 
     @FXML
     private void cobrar(ActionEvent event) {
+        if (carritoList.isEmpty()) {
+            mostrarAlerta("El carrito está vacío. Agregue productos antes de cobrar.");
+            return;
+        }
+
         try {
-            if (carritoList.isEmpty()) {
-                throw new IllegalStateException("/pantallas/AlertaCobrar.fxml");
-            }
-            
-            // 1. Validar stock suficiente para todos los productos
-            for (ProductoCarrito item : carritoList) {
-                Producto original = list.stream()
-                        .filter(p -> p.getID_producto() == item.getId())
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("El producto " + item.getNombre() + " ya no existe en el inventario."));
-
-                if (original.getStock() < item.getCantidad()) {
-                    throw new IllegalStateException("Stock insuficiente para " + original.getNombre());
-                }
-            }
-
-            // --- ABRIR VENTANA DE SELECCIÓN DE PAGO ---
-            FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/tipoPago.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/pantallas/tipoPago.fxml"));
             Parent root = loader.load();
             TipoPagoController pagoController = loader.getController();
+
+            double totalVenta = carritoList.stream().mapToDouble(ProductoCarrito::getTotal).sum(); 
+            pagoController.setTotalAPagar(totalVenta);
 
             Stage stagePago = new Stage();
             stagePago.setTitle("Método de Pago");
             stagePago.setScene(new Scene(root));
-            stagePago.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            stagePago.setResizable(false);
+            stagePago.initModality(javafx.stage.Modality.APPLICATION_MODAL); 
             stagePago.showAndWait();
 
-            String metodoPago = pagoController.getMetodoSeleccionado();
+            String metodoFinal = pagoController.getMetodoSeleccionado();
             
-            // Si el método es null, el cajero cerró la ventana sin elegir, abortamos el cobro
-            if (metodoPago == null) {
-                return; 
-            }
-            // ------------------------------------------
+            if (metodoFinal != null) { 
+                Venta nuevaVenta = new Venta(carritoList, metodoFinal);
 
-            // 2. Crear objeto Venta pasando el Carrito y el Método de Pago elegido
-            Venta nuevaVenta = new Venta(carritoList, metodoPago); 
-            System.out.println("Total calculado en memoria: " + nuevaVenta.getTotal());
-            
-            // 3. Guardar la venta en la BD y obtener el ID generado
-            int idVenta = VentaABD.insertar(nuevaVenta);
+                try {
+                    // Guarda la venta y descuenta el stock en BD y memoria local
+                    int idVenta = VentaABD.insertar(nuevaVenta);
+                    for (ProductoCarrito item : carritoList) {
+                        DetalleABD.insertar(idVenta, item.getId(), item.getCantidad(), item.getPrecio());
+                    }
+                } catch (Exception ebd) {
+                    ebd.printStackTrace();
+                    mostrarAlertaError("Error de Base de Datos", "No se pudo guardar la venta en SQLite.");
+                }
 
-            // 4. Guardar cada detalle de venta y actualizar el stock en BD
-            for (ProductoCarrito item : carritoList) {
-                DetalleABD.insertar(idVenta, item.getId(), item.getCantidad(), item.getPrecio());
-
-                Producto original = list.stream()
-                        .filter(p -> p.getID_producto() == item.getId())
-                        .findFirst().get();
-                double nuevoStock = original.getStock() - item.getCantidad();
-                InformacionProductos.getInstance().actualizarStock(item.getId(), nuevoStock);
+                abrirVentanaTicket(nuevaVenta.generarTicket());
+                
+                carritoList.clear();
+                actualizarTotales();
             }
 
-            // 5. Generar ticket y mostrarlo
-            String textoTicket = nuevaVenta.generarTicket();
-            abrirVentanaTicket(textoTicket);
-
-            // 6. Limpiar carrito
-            carritoList.clear();
-            actualizarTotales();
-
-        } catch (IllegalStateException e) {
-            if (e.getMessage() != null && e.getMessage().startsWith("/pantallas/")) {
-                mostrarMensaje(e.getMessage());
-            } else {
-                mostrarAlerta(e.getMessage());
-            }
         } catch (Exception e) {
-            mostrarAlertaError("Error de Cobro", "Ocurrió un error inesperado durante el cobro.");
             e.printStackTrace();
+            mostrarAlertaError("Error", "No se pudo cargar la pantalla de pago.");
         }
     }
 
@@ -378,10 +336,8 @@ public class PantallaPrincipalController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/Inventario.fxml"));
             Parent root = loader.load();
-
             InventarioController invController = loader.getController();
             invController.configurarPermisos(this.nivelUsuarioActual);
-
             Stage stage = new Stage();
             stage.setTitle("INVENTARIO");
             stage.setScene(new Scene(root));
@@ -397,10 +353,8 @@ public class PantallaPrincipalController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/ticket.fxml"));
             Parent root = loader.load();
-
             TicketController controller = loader.getController();
             controller.setTicketTexto(textoTicket);
-
             Stage stage = new Stage();
             stage.setTitle("Ticket");
             stage.setScene(new Scene(root));
@@ -435,7 +389,6 @@ public class PantallaPrincipalController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/Recargas.fxml"));
             Parent root = loader.load();
-
             Stage stage = new Stage();
             stage.setTitle("RECARGAS");
             stage.setScene(new Scene(root));
@@ -452,7 +405,6 @@ public class PantallaPrincipalController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/ReporteVentas.fxml"));
             Parent root = loader.load();
-
             Stage stage = new Stage();
             stage.setTitle("Reporte de ventas");
             stage.setScene(new Scene(root));
@@ -484,7 +436,6 @@ public class PantallaPrincipalController implements Initializable {
                     FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/CantidadGranel.fxml")); 
                     Parent root = loader.load();
                     CantidadGranelController controller = loader.getController();
-                    
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root));
                     stage.setTitle("Agregar más peso"); 
@@ -497,7 +448,6 @@ public class PantallaPrincipalController implements Initializable {
                         return; 
                     }
                     incremento = peso; 
-                    
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new IllegalStateException("Error al abrir ventana de cantidad a granel.");
@@ -544,7 +494,6 @@ public class PantallaPrincipalController implements Initializable {
                     FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/CantidadGranel.fxml")); 
                     Parent root = loader.load();
                     CantidadGranelController controller = loader.getController();
-                    
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root));
                     stage.setTitle("Quitar peso"); 
@@ -557,7 +506,6 @@ public class PantallaPrincipalController implements Initializable {
                         return; 
                     }
                     decremento = peso; 
-                    
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new IllegalStateException("Error al abrir ventana.");

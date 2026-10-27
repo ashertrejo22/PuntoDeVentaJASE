@@ -45,10 +45,8 @@ public class ReporteVentasController implements Initializable {
         colCantidadProductos.setCellValueFactory(new PropertyValueFactory<>("detalles"));
         colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
 
-        // Cargar datos desde la base de datos
         cargarDatosDesdeBD();
 
-        // Configurar filtro de búsqueda
         listaFiltrada = new FilteredList<>(listaCombinada, item -> true);
         txtBusqueda.textProperty().addListener((obs, oldVal, newVal) -> {
             String texto = (newVal == null) ? "" : newVal.toLowerCase();
@@ -61,11 +59,9 @@ public class ReporteVentasController implements Initializable {
         });
         tablaVentas.setItems(listaFiltrada);
 
-        // Calcular total general
         double totalGeneral = listaCombinada.stream().mapToDouble(ItemReporte::getTotal).sum();
         lblTotalDia.setText(String.format("$%.2f", totalGeneral));
 
-        // Doble clic para ver ticket/comprobante
         tablaVentas.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 ItemReporte seleccionado = tablaVentas.getSelectionModel().getSelectedItem();
@@ -79,7 +75,6 @@ public class ReporteVentasController implements Initializable {
     private void cargarDatosDesdeBD() {
         listaCombinada.clear();
 
-        // 1. Cargar ventas físicas (CORREGIDO: Restaurada la consulta con COUNT para la tabla)
         String sqlVentas = "SELECT v.id_venta, v.folio, v.fecha, v.total_a_pagar, COUNT(d.id_detalle) AS cantidad_productos " +
                            "FROM Venta v LEFT JOIN DetalleVenta d ON v.id_venta = d.id_venta " +
                            "GROUP BY v.id_venta ORDER BY v.fecha DESC";
@@ -90,7 +85,7 @@ public class ReporteVentasController implements Initializable {
 
             while (rs.next()) {
                 String folio = rs.getString("folio");
-                String fecha = rs.getString("fecha"); // Ahora vendrá con fecha y hora de la BD
+                String fecha = rs.getString("fecha"); 
                 int cantidad = rs.getInt("cantidad_productos");
                 double total = rs.getDouble("total_a_pagar");
                 String detalles = "Venta de " + cantidad + " producto(s)";
@@ -100,7 +95,6 @@ public class ReporteVentasController implements Initializable {
             e.printStackTrace();
         }
 
-        // 2. Cargar recargas
         String sqlRecargas = "SELECT folio, fecha, compania, monto FROM Recargas ORDER BY fecha DESC";
 
         try (Connection conn = ConexionBD.getConnection();
@@ -140,6 +134,7 @@ public class ReporteVentasController implements Initializable {
     }
 
     private String buscarTicketPorFolio(String folio) {
+        // Buscar primero en Ventas Físicas
         String sqlVenta = "SELECT v.id_venta, v.folio, v.fecha, v.total_a_pagar, v.metodo_pago, " +
                           "d.cantidad, d.precio_unitario, " +
                           "p.id_producto, p.nombre, p.tipo, p.categoria, " +
@@ -159,6 +154,7 @@ public class ReporteVentasController implements Initializable {
             if (rs.next()) {
                 String fecha = rs.getString("fecha"); 
                 double total = rs.getDouble("total_a_pagar");
+                String metodoPagoBD = rs.getString("metodo_pago");
                 
                 String nombreEmpleado = rs.getString("nombre_empleado") != null ? rs.getString("nombre_empleado") : "Desconocido";
                 int idEmpleado = rs.getInt("id_usuario");
@@ -169,7 +165,7 @@ public class ReporteVentasController implements Initializable {
                 sb.append("        ABARROTES JASE S.A. DE C.V.\n");
                 sb.append("             RFC: JASE230038LH0\n");
                 sb.append("    Prol. San Isidro 151, San Lorenzo\n");
-                sb.append("          Tezonco, Iztapalapa, CDMX\n");
+                sb.append("         Tezonco, Iztapalapa, CDMX\n");
                 sb.append("========================================\n");
 
                 sb.append("Fecha Venta: ").append(fecha).append("\n");
@@ -188,7 +184,6 @@ public class ReporteVentasController implements Initializable {
                     
                     String tipoProd = rs.getString("categoria");
                     if (tipoProd == null) tipoProd = "General";
-                    // -----------------------------------------------------
                     
                     double cantidad = rs.getDouble("cantidad");
                     double precioUnitario = rs.getDouble("precio_unitario");
@@ -208,11 +203,14 @@ public class ReporteVentasController implements Initializable {
                 } while (rs.next());
 
                 sb.append("----------------------------------------\n");
-                sb.append(String.format("%-28s $%7.2f\n", "TOTAL PAGADO:", total));
                 
-                String metodoPago = rs.getString("metodo_pago");
-                if (metodoPago == null) metodoPago = "EFECTIVO";
-                sb.append(String.format("Método de Pago:           %s\n", metodoPago));
+                String totalFormateado = String.format("$%.2f MXN", total);
+                sb.append(String.format("%-25s %s\n", "TOTAL PAGADO:", totalFormateado));
+                
+                if (metodoPagoBD == null || metodoPagoBD.isEmpty()) {
+                    metodoPagoBD = "EFECTIVO";
+                }
+                sb.append("Método de Pago:\n").append(metodoPagoBD).append("\n");
                 
                 sb.append("========================================\n");
                 sb.append("  *** COPIA DE TICKET (HISTÓRICO) ***\n");
@@ -220,7 +218,6 @@ public class ReporteVentasController implements Initializable {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
                 String fechaHoraImpresion = LocalDateTime.now().format(dtf);
                 sb.append("  Reimpreso el: ").append(fechaHoraImpresion).append("\n");
-                
                 sb.append("========================================\n");
                 
                 return sb.toString();
@@ -229,8 +226,8 @@ public class ReporteVentasController implements Initializable {
             e.printStackTrace();
         }
 
-        // Buscar en Recargas
-        String sqlRecarga = "SELECT folio, fecha, compania, monto, numero_telefonico FROM Recargas WHERE folio = ?";
+        // Buscar en Recargas (Incluyendo el método de pago)
+        String sqlRecarga = "SELECT folio, fecha, compania, monto, numero_telefonico, metodo_pago FROM Recargas WHERE folio = ?";
         try (Connection conn = ConexionBD.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sqlRecarga)) {
              
@@ -249,8 +246,18 @@ public class ReporteVentasController implements Initializable {
                 sb.append("Compañía: ").append(rs.getString("compania")).append("\n");
                 sb.append("Teléfono: ").append(rs.getString("numero_telefonico")).append("\n");
                 sb.append("----------------------------------------\n");
-                sb.append(String.format("%-28s $%7.2f\n", "MONTO RECARGADO:", rs.getDouble("monto")));
+                
+                String montoFormateado = String.format("$%.2f MXN", rs.getDouble("monto"));
+                sb.append(String.format("%-25s %s\n", "MONTO RECARGADO:", montoFormateado));
+                
+                String metodoPagoRecarga = rs.getString("metodo_pago");
+                if (metodoPagoRecarga == null || metodoPagoRecarga.isEmpty()) {
+                    metodoPagoRecarga = "EFECTIVO";
+                }
+                sb.append("Método de Pago:\n").append(metodoPagoRecarga).append("\n");
+                
                 sb.append("========================================\n");
+                sb.append("  *** COPIA DE TICKET (HISTÓRICO) ***\n");
                 
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
                 String fechaHoraImpresion = LocalDateTime.now().format(dtf);

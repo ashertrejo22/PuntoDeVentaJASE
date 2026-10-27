@@ -1,47 +1,31 @@
 package org.uacm.puntodeventa.Clases;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class Recarga {
+    private String folio;
     private String numero;
     private String compania;
     private double monto;
     private LocalDateTime fecha;
-    private String folio;
-    
-    public Recarga(String num, String com, double mon){
-        this.numero= num;
-        this.compania= com;
-        this.monto=mon;
-        this.fecha = LocalDateTime.now();
+    private String tipoPago;
+
+    // Constructor principal que recibe el método de pago
+    public Recarga(String numero, String compania, double monto, String metodoPago) {
         this.folio = generarFolio();
+        this.numero = numero;
+        this.compania = compania;
+        this.monto = monto;
+        this.fecha = LocalDateTime.now();
+        this.tipoPago = (metodoPago != null && !metodoPago.isEmpty()) ? metodoPago : "EFECTIVO";
     }
 
-    public String getNumero() {
-        return numero;
-    }
-    
-    public String getCompania() {
-        return compania;
-    }
-
-    public double getMonto() {
-        return monto;
-    }
-
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
-
-    public String getFolio() {
-        return folio;
-    }
-    
-    private String generarFolio() {
-        String fechaParte = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
-        String caracteres = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public String generarFolio() {
+        String fechaParte = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder randomParte = new StringBuilder();
         Random rnd = new Random();
         for (int i = 0; i < 4; i++) {
@@ -50,30 +34,38 @@ public class Recarga {
         return "REC-" + fechaParte + "-" + randomParte.toString();
     }
 
-    // Método para generar el formato del comprobante con encabezado de la tienda
     public String generarComprobante() {
-        StringBuilder ticket = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
+        sb.append("========================================\n");
+        sb.append("        ABARROTES JASE S.A. DE C.V.\n"); 
+        sb.append("             RFC: JASE230038LH0\n");
+        sb.append("    Prol. San Isidro 151, San Lorenzo\n");
+        sb.append("         Tezonco, Iztapalapa, CDMX\n");
+        sb.append("========================================\n");
+        sb.append("     *** COMPROBANTE DE RECARGA ***\n");
+        sb.append("----------------------------------------\n");
+        sb.append("Folio: ").append(this.folio).append("\n");
         
-        ticket.append("--------------------------------------\n");
-        ticket.append("     ABARROTES JASE S.A. DE C.V.\n");
-        ticket.append("         RFC: JASE230038LH0\n");
-        ticket.append("  Prol. San Isidro 151, San Lorenzo\n");
-        ticket.append("   Tezonco, Iztapalapa, CDMX, 09790 \n");
-        ticket.append("--------------------------------------\n");
-
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        ticket.append("Fecha: ").append(this.fecha.format(dtf)).append("\n");
-        ticket.append("Folio: ").append(this.folio).append("\n");
+        sb.append("Fecha Venta: ").append(this.fecha.format(dtf)).append("\n");
+        sb.append("Compañía: ").append(this.compania).append("\n");
+        sb.append("Teléfono: ").append(this.numero).append("\n");
+        sb.append("----------------------------------------\n");
         
-        ticket.append("--------------------------------------\n");
-        ticket.append(String.format("Compañía: %s\n", this.compania));
-        ticket.append(String.format("Teléfono: %s\n", this.numero));
-        ticket.append("--------------------------------------\n");
+        String montoFormateado = String.format("$%.2f MXN", this.monto);
+        sb.append(String.format("%-25s %s\n", "MONTO RECARGADO:", montoFormateado));
+        sb.append("Método de Pago:\n").append(this.tipoPago).append("\n");
+        sb.append("========================================\n");
+        sb.append("       ¡Gracias por su recarga!\n");
+        sb.append("========================================\n");
         
-        ticket.append(String.format("%-25s $%8.2f\n", "MONTO RECARGADO:", this.monto));
-        ticket.append("--------------------------------------\n");
-        ticket.append("       ¡Gracias por su compra!\n");
-        
-        return ticket.toString();
+        return sb.toString();
     }
+
+    public String getFolio() { return folio; }
+    public String getNumero() { return numero; }
+    public String getCompania() { return compania; }
+    public double getMonto() { return monto; }
+    public LocalDateTime getFecha() { return fecha; }
+    public String getMetodoPago() { return tipoPago; }
 }

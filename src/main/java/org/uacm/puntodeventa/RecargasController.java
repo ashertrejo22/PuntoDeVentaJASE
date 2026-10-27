@@ -57,18 +57,34 @@ public class RecargasController implements Initializable {
                 return;
             }
 
-            // Crear objeto Recarga (genera folio automáticamente)
-            Recarga nuevaRecarga = new Recarga(numero, companiaSeleccionada, monto);
+            // 1. Abrir la ventana de selección de método de pago (Efectivo/Tarjeta)
+            FXMLLoader loaderPago = new FXMLLoader(getClass().getResource("/pantallas/tipoPago.fxml"));
+            Parent rootPago = loaderPago.load();
+            TipoPagoController pagoController = loaderPago.getController();
+            pagoController.setTotalAPagar(monto);
 
-            // Guardar en base de datos
-            RecargaABD.insertar(nuevaRecarga);
+            Stage stagePago = new Stage();
+            stagePago.setTitle("Método de Pago - Recarga");
+            stagePago.setScene(new Scene(rootPago));
+            stagePago.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stagePago.showAndWait();
 
-            // Mostrar comprobante
-            abrirComprobanteRecarga(nuevaRecarga.generarComprobante());
+            String metodoFinal = pagoController.getMetodoSeleccionado();
 
-            // Cerrar ventana actual
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.close();
+            if (metodoFinal != null) {
+                // 2. Crear objeto Recarga incluyendo el método de pago seleccionado
+                Recarga nuevaRecarga = new Recarga(numero, companiaSeleccionada, monto, metodoFinal);
+
+                // 3. Guardar en base de datos
+                RecargaABD.insertar(nuevaRecarga);
+
+                // 4. Mostrar comprobante
+                abrirComprobanteRecarga(nuevaRecarga.generarComprobante());
+
+                // 5. Cerrar ventana actual
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.close();
+            }
 
         } catch (Exception e) {
             mostrarAlerta(Alert.AlertType.ERROR, "Error del Sistema", "Ocurrió un error inesperado: " + e.getMessage());
