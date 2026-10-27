@@ -55,6 +55,9 @@ public class InventarioController implements Initializable {
     @FXML
     private TableColumn<Producto, Integer> columnaide;
     
+    @FXML 
+    private TableColumn<Producto, String> colCategoria;
+    
     // La lista observable se obtiene desde el singleton que ahora lee de la BD
     ObservableList<Producto> list = InformacionProductos.getInstance().getProductos();
     private FilteredList<Producto> filteredProductos;
@@ -70,6 +73,7 @@ public class InventarioController implements Initializable {
         columnaide.setCellValueFactory(new PropertyValueFactory<>("ID_producto"));
         columnaTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         columnaPrecio.setCellValueFactory(new PropertyValueFactory<>("precio_venta"));
+        colCategoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
         
         // Aplicar filtro de búsqueda en tiempo real
         filteredProductos = new FilteredList<>(list, p -> true);

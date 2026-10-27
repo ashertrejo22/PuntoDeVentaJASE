@@ -21,11 +21,15 @@
       </Pane>
       <TableView fx:id="tableViewProductos" layoutX="14.0" layoutY="152.0" prefHeight="305.0" prefWidth="623.0">
         <columns>
-          <TableColumn fx:id="columnaide" prefWidth="114.5" text="ID" />
-          <TableColumn fx:id="columnaNombre" prefWidth="258.5" text="Nombre" />
-            <TableColumn fx:id="columnaStock" prefWidth="84.0" text="Stock" />
-            <TableColumn fx:id="columnaPrecio" prefWidth="82.5" text="Precio" />
-            <TableColumn fx:id="columnaTipo" prefWidth="82.5" text="Tipo" />
+          <TableColumn fx:id="columnaide" prefWidth="60.0" text="ID" />
+          <TableColumn fx:id="columnaNombre" prefWidth="190.0" text="Nombre" />
+          
+          <!-- NUEVA COLUMNA DE CATEGORÍA -->
+          <TableColumn fx:id="colCategoria" prefWidth="105.0" text="Categoría" />
+          
+          <TableColumn fx:id="columnaStock" prefWidth="85.0" text="Stock" />
+          <TableColumn fx:id="columnaPrecio" prefWidth="85.0" text="Precio" />
+          <TableColumn fx:id="columnaTipo" prefWidth="97.0" text="Tipo" />
         </columns>
       </TableView>
       <TextField fx:id="txtFieldBuscar" layoutX="305.0" layoutY="102.0" prefHeight="26.0" prefWidth="246.0" promptText="Busqueda por nombre" />

@@ -1,6 +1,8 @@
 package org.uacm.puntodeventa.Clases;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -11,99 +13,123 @@ import java.util.Random;
  */
 public class Venta {
     private String folio;
-    private LocalDate fecha_venta;
+    private LocalDateTime fecha_venta;
     private List<ProductoCarrito> listaProductos;
     private double total;
-    public Venta(List<ProductoCarrito> carrito) {
+    private String tipoPago;
+
+    public Venta(List<ProductoCarrito> carrito, String metodoPago) {
         this.folio = generarFolio();
-        this.fecha_venta = LocalDate.now();
+        this.fecha_venta = LocalDateTime.now();
         this.listaProductos = new ArrayList<>(carrito);
         this.total = totalPagar();
+        this.tipoPago = metodoPago;
     }
+    
     /**
      * Constructor para la venta de varios productos
      */
     public Venta() {
         this.folio = generarFolio();
-        this.fecha_venta = LocalDate.now();
+        this.fecha_venta = LocalDateTime.now();
         this.listaProductos = new ArrayList<>();
         this.total = 0;
     }
     
     /**
-     * Genera un folio de nuestra venta
+     * Genera un folio de venta profesional y legible (Ej. VTA-260918-A4X9)
      * @return Variable con el folio de la venta
      */
     public String generarFolio() {
+        String fechaParte = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
+
         String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder sb = new StringBuilder();
+        StringBuilder randomParte = new StringBuilder();
         Random rnd = new Random();
-        for (int i = 0; i < 10; i++) {
-            sb.append(caracteres.charAt(rnd.nextInt(caracteres.length())));
+        for (int i = 0; i < 4; i++) {
+            randomParte.append(caracteres.charAt(rnd.nextInt(caracteres.length())));
         }
-        return sb.toString();
+        return "VTA-" + fechaParte + "-" + randomParte.toString();
     }
    
     /**
      * Funcion que calcula el pago total de varios productos
-     * @param lista Recibe la lista de productos a cobrar
      * @return Total a pagar por los productos
      */
     public double totalPagar() {
-    double suma = 0;
+        double suma = 0;
         for (ProductoCarrito item : listaProductos) {
             suma += item.getTotal(); 
         }
-    this.total = suma; 
-    return suma;
+        this.total = suma; 
+        return suma;
     }
    
-/**
+    /**
      * Funcion que da formato al ticket con ancho fijo
      * @return Cadena con el ticket de venta alineado
      */
     public String generarTicket() {
         StringBuilder ticket = new StringBuilder();
 
+        ticket.append("--------------------------------------\n");
+        ticket.append("     ABARROTES JASE S.A. DE C.V.\n");
+        ticket.append("         RFC: JASE230038LH0\n");
+        ticket.append("  Prol. San Isidro 151, San Lorenzo\n");
+        ticket.append("   Tezonco, Iztapalapa, CDMX, 09790 \n");
+        ticket.append("--------------------------------------\n");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        ticket.append("Fecha: ").append(this.fecha_venta.format(dtf)).append("\n");
         ticket.append("Folio: ").append(this.folio).append("\n");
-        ticket.append("Fecha: ").append(this.fecha_venta).append("\n");
-        ticket.append("-------------------------------------\n");
-
-        ticket.append(String.format("%-5s %-18s %12s\n", "CANT", "DESCRIPCION", "IMPORTE"));
-        ticket.append("-------------------------------------\n");
+        
+        ticket.append("--------------------------------------\n");
+        ticket.append(String.format("%-11s %-8s %-5s %-8s\n", "ARTICULO", "CATEG", "CANT", "IMPORTE"));
         
         ticket.append(mostrarProductos());
 
-        ticket.append("-------------------------------------\n");
-        ticket.append(String.format("%-24s $%11.2f\n", "TOTAL A PAGAR:", this.total));
-        ticket.append("=====================================\n");
+        ticket.append("--------------------------------------\n");
+        ticket.append(String.format("%-25s $%8.2f\n", "TOTAL A PAGAR:", this.total));
+        ticket.append(String.format("Método de Pago:           %s\n", this.tipoPago));
+        ticket.append("--------------------------------------\n");
+        ticket.append("       ¡Gracias por su compra!\n");
         
         return ticket.toString();
     }
    
+
     /**
-     * Funcion que muestra los productos en formato tabular
+     * Funcion que muestra los productos
      * @return Lista de productos en tipo String
      */
     public String mostrarProductos() {
         StringBuilder sb = new StringBuilder();
         for (ProductoCarrito p : listaProductos) {
-            String nombreFormateado = p.getNombre();
-            if (nombreFormateado.length() > 17) {
-                nombreFormateado = nombreFormateado.substring(0, 15) + "..";
+            
+            // Buscamos el producto original en el inventario
+            Producto original = InformacionProductos.getInstance().getProductos().stream()
+                    .filter(prod -> prod.getID_producto() == p.getId())
+                    .findFirst()
+                    .orElse(null);
+                    
+            String categoriaReal = (original != null && original.getCategoria() != null) ? original.getCategoria() : "General";
+            String nombreFormateado = p.getNombre().length() > 10 ? p.getNombre().substring(0, 9) + "." : p.getNombre();
+            String catCorta = categoriaReal.length() > 7 ? categoriaReal.substring(0, 7) : categoriaReal;
+            
+            // Limpiamos el ".0" de las cantidades enteras
+            String cantidad = String.valueOf(p.getCantidad());
+            if (cantidad.endsWith(".0")) {
+                cantidad = cantidad.replace(".0", "");
             }
             
-            String cantidad = p.getCantidad() + "x";
-            sb.append(String.format("%-5s %-18s $%11.2f\n", cantidad, nombreFormateado, p.getTotal()));
+
+            sb.append(String.format("%-11s %-8s %-5s $%8.2f\n", nombreFormateado, catCorta, cantidad, p.getTotal()));
         }
         return sb.toString();
     }
    
     /**
      * Agrega los productos al "carrito"
-     * @param p Producto a vender
-     * @param cantidad Cuantos productos vendera del mismo
-     * @return Verdadero o falso si se agrego el producto al "carrito"
+     * @param nuevo Producto a vender del carrito
      */
     public void agregarProductoCarrito(ProductoCarrito nuevo) {
         for (ProductoCarrito item : listaProductos) {
@@ -121,21 +147,27 @@ public class Venta {
         return this.folio;
     }
 
-    public LocalDate getFecha_venta() {
+    public LocalDateTime getFecha_venta() {
         return this.fecha_venta;
     }
 
     public double getTotal() {
         return this.total;
     }
+    
     public List<ProductoCarrito> getListaProductos() {
-    return this.listaProductos;
+        return this.listaProductos;
     }
+    
     public int getCantidadProductos() {
-    int total = 0;
-    for (ProductoCarrito p : listaProductos) {
-        total += p.getCantidad();
+        int total = 0;
+        for (ProductoCarrito p : listaProductos) {
+            total += p.getCantidad();
+        }
+        return total;
     }
-    return total;
+    
+    public String getMetodoPago() {
+        return this.tipoPago;
     }
 }

@@ -5,9 +5,10 @@ package org.uacm.puntodeventa.Clases;
  */
 public class ProductoGranel extends Producto{
     private String unidadMedida;
-    public ProductoGranel(int id, String nom, String tip, double stock, double precio_pro, String uM, String ruta) {
-        super(id, nom, tip, stock, precio_pro, ruta);
+    public ProductoGranel(int id, String nom, String tip, double stock, double precio_pro, String uM, String ruta, String categoria) {
+        super(id, nom, tip, stock, precio_pro, ruta,categoria);
         this.unidadMedida = uM;
+        
     }
     
     public double calcularPrecioExacto(double pesoVendido) {

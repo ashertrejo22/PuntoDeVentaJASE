@@ -8,8 +8,8 @@ public class ProductoPerecedero extends Producto {
     private String lote;
     public double precioConDescuento = 0;
 
-    public ProductoPerecedero(int id, String nom, String tip, double stock, double precio_pro, LocalDate fech, String lot, String ruta) {
-        super(id, nom, tip, stock, precio_pro, ruta);
+    public ProductoPerecedero(int id, String nom, String tip, double stock, double precio_pro, LocalDate fech, String lot, String ruta, String categoria) {
+        super(id, nom, tip, stock, precio_pro, ruta,categoria);
         this.fechaCaducidad = fech;
         this.lote = lot;
     }

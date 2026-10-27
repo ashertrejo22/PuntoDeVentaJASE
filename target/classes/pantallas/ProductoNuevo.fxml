@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="446.0" prefWidth="330.0" style="-fx-background-color: White;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.uacm.puntodeventa.ProductoNuevoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="486.0" prefWidth="330.0" style="-fx-background-color: White;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.uacm.puntodeventa.ProductoNuevoController">
    <children>
       <Pane layoutX="-1.0" prefHeight="54.0" prefWidth="330.0" style="-fx-background-color: #00502b;">
          <children>
@@ -25,7 +25,7 @@
             </Label>
          </children>
       </Pane>
-      <GridPane alignment="CENTER" layoutX="7.0" layoutY="54.0" prefHeight="254.0" prefWidth="306.0">
+      <GridPane alignment="CENTER" layoutX="7.0" layoutY="54.0" prefHeight="294.0" prefWidth="306.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -37,6 +37,8 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <!-- NUEVA FILA PARA LA IMAGEN (La imagen bajó un renglón) -->
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre del producto:" wrappingWidth="154.47705841064453">
@@ -44,48 +46,62 @@
                   <Font name="Arial Bold" size="12.0" />
                </font></Text>
             <TextField fx:id="txtFieldNomProducto" prefWidth="169.0" GridPane.columnIndex="1" />
+            
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Precio del proveedor:" GridPane.rowIndex="1">
                <font>
                   <Font name="Arial Bold" size="12.0" />
                </font></Text>
             <TextField fx:id="txtFielPrecioProv" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tipo de producto:" GridPane.rowIndex="2">
                <font>
                   <Font name="Arial Bold" size="12.0" />
                </font></Text>
             <ComboBox fx:id="comboBoxTipPro" prefHeight="25.0" prefWidth="156.0" promptText="Selecciona" visibleRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <DatePicker fx:id="datePickCaducidad" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Caducidad:" GridPane.rowIndex="3">
+            
+            <!-- NUEVA FILA: CATEGORÍA -->
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Categoría:" GridPane.rowIndex="3">
                <font>
                   <Font name="Arial Bold" size="12.0" />
                </font></Text>
-            <Text fx:id="txtCantidad" strokeType="OUTSIDE" strokeWidth="0.0" text="Cantidad:" GridPane.rowIndex="4">
+            <ComboBox fx:id="comboBoxCategoria" prefHeight="25.0" prefWidth="156.0" promptText="Selecciona" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Caducidad:" GridPane.rowIndex="4">
                <font>
                   <Font name="Arial Bold" size="12.0" />
                </font></Text>
-            <TextField fx:id="txtFieldCantidad" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Label text="Imagen del Producto:" GridPane.rowIndex="5">
+            <DatePicker fx:id="datePickCaducidad" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            
+            <Text fx:id="txtCantidad" strokeType="OUTSIDE" strokeWidth="0.0" text="Cantidad:" GridPane.rowIndex="5">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font></Text>
+            <TextField fx:id="txtFieldCantidad" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            
+            <Label text="Imagen del Producto:" GridPane.rowIndex="6">
                <font>
                   <Font name="Arial Bold" size="12.0" />
                </font>
             </Label>
-            <Button fx:id="btnSeleccionarImagen" alignment="CENTER" mnemonicParsing="false" onAction="#seleccionarImagen" prefHeight="24.0" prefWidth="122.0" style="-fx-background-color: #146551;" text="Seleccionar" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <Button fx:id="btnSeleccionarImagen" alignment="CENTER" mnemonicParsing="false" onAction="#seleccionarImagen" prefHeight="24.0" prefWidth="122.0" style="-fx-background-color: #146551;" text="Seleccionar" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <font>
                   <Font name="Arial Bold" size="13.0" />
                </font>
             </Button>
          </children>
       </GridPane>
-      <Button contentDisplay="CENTER" layoutX="41.0" layoutY="395.0" mnemonicParsing="false" onAction="#clickAceptar" prefHeight="29.0" prefWidth="87.0" style="-fx-background-color: #146551;" text="Aceptar" textAlignment="JUSTIFY" textFill="WHITE">
+      
+      <!-- LOS BOTONES Y LA IMAGEN PREVIA BAJARON PARA HACER ESPACIO -->
+      <Button contentDisplay="CENTER" layoutX="41.0" layoutY="435.0" mnemonicParsing="false" onAction="#clickAceptar" prefHeight="29.0" prefWidth="87.0" style="-fx-background-color: #146551;" text="Aceptar" textAlignment="JUSTIFY" textFill="WHITE">
          <font>
             <Font name="Arial Bold" size="14.0" />
          </font>
       </Button>
-      <Button layoutX="192.0" layoutY="395.0" mnemonicParsing="false" onAction="#clickCancelar" prefHeight="29.0" prefWidth="87.0" style="-fx-background-color: #CF2E2B;" text="Cancelar" textFill="WHITE">
+      <Button layoutX="192.0" layoutY="435.0" mnemonicParsing="false" onAction="#clickCancelar" prefHeight="29.0" prefWidth="87.0" style="-fx-background-color: #CF2E2B;" text="Cancelar" textFill="WHITE">
          <font>
             <Font name="Arial Bold" size="14.0" />
          </font>
       </Button>
-      <ImageView fx:id="previewImagen" fitHeight="62.0" fitWidth="102.0" layoutX="23.0" layoutY="308.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="previewImagen" fitHeight="62.0" fitWidth="102.0" layoutX="23.0" layoutY="358.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

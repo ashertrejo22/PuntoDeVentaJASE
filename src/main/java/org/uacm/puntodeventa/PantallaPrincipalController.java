@@ -24,7 +24,6 @@ import org.uacm.puntodeventa.Clases.Producto;
 import org.uacm.puntodeventa.Clases.InformacionProductos;
 import org.uacm.puntodeventa.Clases.ProductoCarrito;
 import org.uacm.puntodeventa.Clases.Venta;
-import org.uacm.puntodeventa.Clases.RegistroVentas;
 import org.uacm.puntodeventa.DB.DetalleABD;
 import org.uacm.puntodeventa.DB.VentaABD;
 
@@ -69,6 +68,9 @@ public class PantallaPrincipalController implements Initializable {
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
         
+        // Regla para que las columnas se ajusten automáticamente al maximizar
+        tableViewCarrito.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         if (lblFecha != null) {
             lblFecha.setText(fecha_actual.toString());
         }
@@ -175,7 +177,6 @@ public class PantallaPrincipalController implements Initializable {
         // Verificamos si es a Granel usando la herencia
         if (seleccionado instanceof org.uacm.puntodeventa.Clases.ProductoGranel || "Granel".equalsIgnoreCase(seleccionado.getTipo())) {
             try {
-                // Cargar el diseño FXML de la ventana de granel
                 FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/CantidadGranel.fxml")); 
                 Parent root = loader.load();
                 
@@ -294,70 +295,83 @@ public class PantallaPrincipalController implements Initializable {
         lblArticulosCount.setText(String.format("%.2f", totalArticulos));
         lblTotal.setText(String.format("$%.2f", totalPagar));
     }
+
     @FXML
-private void cobrar(ActionEvent event) {
-    try {
-        if (carritoList.isEmpty()) {
-            throw new IllegalStateException("/pantallas/AlertaCobrar.fxml");
-        }
-
-        // 1. Validar stock suficiente para todos los productos
-        for (ProductoCarrito item : carritoList) {
-            Producto original = list.stream()
-                    .filter(p -> p.getID_producto() == item.getId())
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("El producto " + item.getNombre() + " ya no existe en el inventario."));
-
-            if (original.getStock() < item.getCantidad()) {
-                throw new IllegalStateException("Stock insuficiente para " + original.getNombre());
+    private void cobrar(ActionEvent event) {
+        try {
+            if (carritoList.isEmpty()) {
+                throw new IllegalStateException("/pantallas/AlertaCobrar.fxml");
             }
+            
+            // 1. Validar stock suficiente para todos los productos
+            for (ProductoCarrito item : carritoList) {
+                Producto original = list.stream()
+                        .filter(p -> p.getID_producto() == item.getId())
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalStateException("El producto " + item.getNombre() + " ya no existe en el inventario."));
+
+                if (original.getStock() < item.getCantidad()) {
+                    throw new IllegalStateException("Stock insuficiente para " + original.getNombre());
+                }
+            }
+
+            // --- ABRIR VENTANA DE SELECCIÓN DE PAGO ---
+            FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/tipoPago.fxml"));
+            Parent root = loader.load();
+            TipoPagoController pagoController = loader.getController();
+
+            Stage stagePago = new Stage();
+            stagePago.setTitle("Método de Pago");
+            stagePago.setScene(new Scene(root));
+            stagePago.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stagePago.setResizable(false);
+            stagePago.showAndWait();
+
+            String metodoPago = pagoController.getMetodoSeleccionado();
+            
+            // Si el método es null, el cajero cerró la ventana sin elegir, abortamos el cobro
+            if (metodoPago == null) {
+                return; 
+            }
+            // ------------------------------------------
+
+            // 2. Crear objeto Venta pasando el Carrito y el Método de Pago elegido
+            Venta nuevaVenta = new Venta(carritoList, metodoPago); 
+            System.out.println("Total calculado en memoria: " + nuevaVenta.getTotal());
+            
+            // 3. Guardar la venta en la BD y obtener el ID generado
+            int idVenta = VentaABD.insertar(nuevaVenta);
+
+            // 4. Guardar cada detalle de venta y actualizar el stock en BD
+            for (ProductoCarrito item : carritoList) {
+                DetalleABD.insertar(idVenta, item.getId(), item.getCantidad(), item.getPrecio());
+
+                Producto original = list.stream()
+                        .filter(p -> p.getID_producto() == item.getId())
+                        .findFirst().get();
+                double nuevoStock = original.getStock() - item.getCantidad();
+                InformacionProductos.getInstance().actualizarStock(item.getId(), nuevoStock);
+            }
+
+            // 5. Generar ticket y mostrarlo
+            String textoTicket = nuevaVenta.generarTicket();
+            abrirVentanaTicket(textoTicket);
+
+            // 6. Limpiar carrito
+            carritoList.clear();
+            actualizarTotales();
+
+        } catch (IllegalStateException e) {
+            if (e.getMessage() != null && e.getMessage().startsWith("/pantallas/")) {
+                mostrarMensaje(e.getMessage());
+            } else {
+                mostrarAlerta(e.getMessage());
+            }
+        } catch (Exception e) {
+            mostrarAlertaError("Error de Cobro", "Ocurrió un error inesperado durante el cobro.");
+            e.printStackTrace();
         }
-
-        // 2. Crear objeto Venta con los datos del carrito
-        Venta nuevaVenta = new Venta(carritoList); // Asegúrate de que el constructor copie la lista y calcule el total
-        System.out.println("Total calculado en memoria: " + nuevaVenta.getTotal());
-        // 3. Guardar la venta en la BD y obtener el ID generado
-        int idVenta = VentaABD.insertar(nuevaVenta); // Debe devolver el id_venta
-
-        // 4. Guardar cada detalle de venta y actualizar el stock en BD
-        for (ProductoCarrito item : carritoList) {
-            // Insertar detalle
-            DetalleABD.insertar(idVenta, item.getId(), item.getCantidad(), item.getPrecio());
-
-            // Reducir stock en la base de datos (y en la lista observable)
-            Producto original = list.stream()
-                    .filter(p -> p.getID_producto() == item.getId())
-                    .findFirst().get();
-            double nuevoStock = original.getStock() - item.getCantidad();
-            InformacionProductos.getInstance().actualizarStock(item.getId(), nuevoStock);
-        }
-
-        // 5. Generar ticket y mostrarlo
-        String textoTicket = nuevaVenta.generarTicket();
-        abrirVentanaTicket(textoTicket);
-
-        // 6. Mostrar mensaje de éxito
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Venta realizada");
-        alert.setHeaderText(null);
-        alert.setContentText("Total a pagar: " + lblTotal.getText() + "\nGracias por su compra.");
-        alert.showAndWait();
-
-        // 7. Limpiar carrito
-        carritoList.clear();
-        actualizarTotales();
-
-    } catch (IllegalStateException e) {
-        if (e.getMessage() != null && e.getMessage().startsWith("/pantallas/")) {
-            mostrarMensaje(e.getMessage());
-        } else {
-            mostrarAlerta(e.getMessage());
-        }
-    } catch (Exception e) {
-        mostrarAlertaError("Error de Cobro", "Ocurrió un error inesperado durante el cobro.");
-        e.printStackTrace();
     }
-}
 
     @FXML
     public void abrirInventario(ActionEvent event) {
@@ -449,7 +463,8 @@ private void cobrar(ActionEvent event) {
             e.printStackTrace();
         }
     }
-@FXML
+    
+    @FXML
     public void agregarMas(ActionEvent event) {
         try {
             ProductoCarrito seleccionado = tableViewCarrito.getSelectionModel().getSelectedItem();
@@ -462,28 +477,26 @@ private void cobrar(ActionEvent event) {
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("El producto original ya no existe."));
 
-            double incremento = 1.0; // Por defecto suma 1 pieza para productos normales
+            double incremento = 1.0; 
 
-            // --- NUEVA LÓGICA: Preguntar cuánto sumar si es a granel ---
             if (original instanceof org.uacm.puntodeventa.Clases.ProductoGranel || "Granel".equalsIgnoreCase(original.getTipo())) {
                 try {
-                    // Reutilizamos tu ventana verde
                     FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/CantidadGranel.fxml")); 
                     Parent root = loader.load();
                     CantidadGranelController controller = loader.getController();
                     
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root));
-                    stage.setTitle("Agregar más peso"); // Título para que el cajero sepa qué hace
+                    stage.setTitle("Agregar más peso"); 
                     stage.initModality(javafx.stage.Modality.APPLICATION_MODAL); 
                     stage.setResizable(false);
                     stage.showAndWait(); 
                     
                     double peso = controller.getCantidadFinal();
                     if (peso == -1.0) {
-                        return; // Si le da a "Cancelar", detenemos todo
+                        return; 
                     }
-                    incremento = peso; // El peso que escribió en la ventana es lo que vamos a sumar
+                    incremento = peso; 
                     
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -524,28 +537,26 @@ private void cobrar(ActionEvent event) {
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("El producto original ya no existe."));
 
-            double decremento = 1.0; // Por defecto resta 1 pieza para productos normales
+            double decremento = 1.0; 
 
-            // --- NUEVA LÓGICA: Preguntar cuánto restar si es a granel ---
             if (original instanceof org.uacm.puntodeventa.Clases.ProductoGranel || "Granel".equalsIgnoreCase(original.getTipo())) {
                 try {
-                    // Reutilizamos tu ventana verde
                     FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/CantidadGranel.fxml")); 
                     Parent root = loader.load();
                     CantidadGranelController controller = loader.getController();
                     
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root));
-                    stage.setTitle("Quitar peso"); // Título para indicar que se va a restar
+                    stage.setTitle("Quitar peso"); 
                     stage.initModality(javafx.stage.Modality.APPLICATION_MODAL); 
                     stage.setResizable(false);
                     stage.showAndWait(); 
                     
                     double peso = controller.getCantidadFinal();
                     if (peso == -1.0) {
-                        return; // Si le da a "Cancelar", detenemos todo
+                        return; 
                     }
-                    decremento = peso; // El peso que escribió es lo que vamos a restar
+                    decremento = peso; 
                     
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -575,6 +586,7 @@ private void cobrar(ActionEvent event) {
             }
         }
     }
+    
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Atención");
@@ -602,6 +614,4 @@ private void cobrar(ActionEvent event) {
             e.printStackTrace();
         }
     }
-    
-    
 }

@@ -6,6 +6,7 @@ org\uacm\puntodeventa\NumerosValidosController.class
 org\uacm\puntodeventa\DetalleProductoController.class
 org\uacm\puntodeventa\DB\DetalleABD.class
 org\uacm\puntodeventa\PantallaPrincipalController$1.class
+org\uacm\puntodeventa\TipoPagoController.class
 org\uacm\puntodeventa\ActualizarController.class
 org\uacm\puntodeventa\NombreController.class
 org\uacm\puntodeventa\Clases\Usuario.class
@@ -30,7 +31,6 @@ org\uacm\puntodeventa\Clases\ProductoCarrito.class
 org\uacm\puntodeventa\AlertaGramosController.class
 org\uacm\puntodeventa\AlertaCobrarController.class
 org\uacm\puntodeventa\Clases\ProductoPerecedero.class
-org\uacm\puntodeventa\FXMLController.class
 org\uacm\puntodeventa\PreguntasController.class
 org\uacm\puntodeventa\TicketController.class
 AlertaLlenarCamposController.class

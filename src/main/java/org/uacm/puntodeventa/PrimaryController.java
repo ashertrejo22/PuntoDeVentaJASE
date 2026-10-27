@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class PrimaryController {
-
+    //Pantalla Login
     @FXML private Button btnIniciarSesion;
     @FXML private TextField TxtFieldUsuario;
     @FXML private PasswordField PasswordField;
@@ -80,12 +80,19 @@ public class PrimaryController {
             Parent root = loader.load();
             PantallaPrincipalController controller = loader.getController();
             controller.configurarPermisos(nivelUsuario, nombreUsuario);
+            
             Stage stage = new Stage();
             stage.setTitle("Sistema de Ventas");
             stage.setScene(new Scene(root, 917, 660));
+
+            stage.setMaximized(true);
+            
             stage.show();
+            
+            // Cerrar la ventana de Login
             Stage actual = (Stage) btnIniciarSesion.getScene().getWindow();
             actual.close();
+            
         } catch (IOException e) {
             mostrarAlertaError("Error de Sistema", "No se pudo cargar la pantalla principal.");
             e.printStackTrace();
@@ -99,8 +106,11 @@ public class PrimaryController {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.show();
+            
+            // Cerrar la ventana de Login
             Stage actual = (Stage) btnIniciarSesion.getScene().getWindow();
             actual.close();
+            
         } catch (IOException e) {
             mostrarAlertaError("Error de Sistema", "No se pudo cargar la pantalla de recuperación.");
             e.printStackTrace();

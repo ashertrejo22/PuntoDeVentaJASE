@@ -10,6 +10,7 @@ public class DetalleProductoController {
 
     @FXML private Label lblNombre;
     @FXML private Label lblTipo;
+    @FXML private Label lblCategoria;
     @FXML private Label lblPrecio;
     @FXML private Label lblStock;
     @FXML private Label lblID;
@@ -18,6 +19,7 @@ public class DetalleProductoController {
     public void setProducto(Producto p) {
         lblNombre.setText(p.getNombre());
         lblTipo.setText(p.getTipo());
+        lblCategoria.setText(p.getCategoria());
         lblPrecio.setText("$" + p.getPrecio_venta());
         lblStock.setText(String.valueOf(p.getStock()));
         lblID.setText(String.valueOf(p.getID_producto()));

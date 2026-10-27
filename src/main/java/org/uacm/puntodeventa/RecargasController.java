@@ -66,9 +66,6 @@ public class RecargasController implements Initializable {
             // Mostrar comprobante
             abrirComprobanteRecarga(nuevaRecarga.generarComprobante());
 
-            // Mostrar mensaje de éxito
-            mostrarMensaje("/pantallas/AlertaExito.fxml");
-
             // Cerrar ventana actual
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();

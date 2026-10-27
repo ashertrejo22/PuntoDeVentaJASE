@@ -10,23 +10,20 @@ public class Producto {
     private double precio_prov;
     private double precio_venta;
     private String rutaImagen;
+    private String categoria;
     
-    public Producto(int id, String nom, String tip, double stock, double precio_pro) {
+    
+    public Producto(int id, String nom, String tip, double stock, double precio_pro,String ruta, String categoria) {
         this.ID_producto = id;
         this.nombre = nom;
         this.tipo = tip;
         this.stock = stock;
         this.precio_prov = precio_pro;
         this.precio_venta = calcularPrecioVenta(precio_pro);
-        this.rutaImagen = null;
+        this.rutaImagen = ruta;
+        this.categoria = categoria;
     }
 
-    public Producto(int id, String nom, String tip, double stock, double precio_pro, 
-                    String ruta) {
-        this(id, nom, tip, stock, precio_pro);
-        this.precio_venta = calcularPrecioVenta(precio_pro);
-        this.rutaImagen = ruta;
-    }
 
     public double calcularPrecioVenta(double precio) {
         return Math.ceil(precio + precio * 0.2);
@@ -99,6 +96,14 @@ public class Producto {
 
     public void setRutaImag(String ruta) {
         this.rutaImagen = ruta;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
     public String mostrarDetalles() {

@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="292.0" prefWidth="266.0" style="-fx-background-color: White;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.uacm.puntodeventa.RegistroExitosoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="266.0" style="-fx-background-color: White;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.uacm.puntodeventa.RegistroExitosoController">
    <children>
       <Pane prefHeight="51.0" prefWidth="266.0" style="-fx-background-color: #00502b;">
          <children>
@@ -21,7 +21,7 @@
             </Label>
          </children>
       </Pane>
-      <GridPane layoutX="22.0" layoutY="80.0" prefHeight="153.0" prefWidth="228.0">
+      <GridPane layoutX="22.0" layoutY="80.0" prefHeight="180.0" prefWidth="228.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -32,6 +32,8 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <!-- NUEVA FILA PARA CATEGORÍA -->
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
@@ -60,6 +62,22 @@
                   <Font name="Arial Bold" size="12.0" />
                </font>
             </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Caducidad:" GridPane.rowIndex="5">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Categoría:" GridPane.rowIndex="6">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+            </Text>
+            <Text fx:id="txtCategoria" strokeType="OUTSIDE" strokeWidth="0.0" text="General" GridPane.columnIndex="1" GridPane.rowIndex="6">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font>
+            </Text>
+
             <Text fx:id="txtTipo" strokeType="OUTSIDE" strokeWidth="0.0" text="Normal" GridPane.columnIndex="1">
                <font>
                   <Font name="Arial" size="12.0" />
@@ -85,11 +103,6 @@
                   <Font name="Arial" size="12.0" />
                </font>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Caducidad:" GridPane.rowIndex="5">
-               <font>
-                  <Font name="Arial Bold" size="12.0" />
-               </font>
-            </Text>
             <Text fx:id="txtFecha" strokeType="OUTSIDE" strokeWidth="0.0" text="23-03-26" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <font>
                   <Font name="Arial" size="12.0" />
@@ -102,7 +115,8 @@
             <Font name="Arial Bold" size="15.0" />
          </font>
       </Text>
-      <Button fx:id="btnAceptar" layoutX="92.0" layoutY="248.0" mnemonicParsing="false" onAction="#clickAceptar" style="-fx-background-color: #146551;" text="Aceptar" textFill="WHITE">
+      
+      <Button fx:id="btnAceptar" layoutX="92.0" layoutY="280.0" mnemonicParsing="false" onAction="#clickAceptar" style="-fx-background-color: #146551;" text="Aceptar" textFill="WHITE">
          <font>
             <Font name="Arial Bold" size="16.0" />
          </font>

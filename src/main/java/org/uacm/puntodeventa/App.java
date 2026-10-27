@@ -28,13 +28,12 @@ public class App extends Application {
         stage.setTitle("Iniciar Sesión");
         stage.show();
         try {
-    Class.forName("org.sqlite.JDBC");
-    try (Connection conn = ConexionBD.getConnection()) {
-        // Ejecutar script de creación de tablas (o usar DB Browser manualmente)
-    }
-} catch (ClassNotFoundException | SQLException e) {
-    e.printStackTrace();
-}
+            Class.forName("org.sqlite.JDBC");
+            try (Connection conn = ConexionBD.getConnection()) {
+            }
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            }
        
     }
 
