@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+          "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+          "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="severity" value="warning"/>
+    <property name="fileExtensions" value="java"/>
+
+    <!-- Verifica la longitud de las líneas -->
+    <module name="LineLength">
+        <property name="max" value="120"/>
+        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+    </module>
+
+    <module name="TreeWalker">
+        <!-- ====== REGLAS DE NOMBRES ====== -->
+        <!-- Clases en UpperCamelCase -->
+        <module name="TypeName"/>
+        <!-- Métodos en lowerCamelCase -->
+        <module name="MethodName"/>
+        <!-- Variables en lowerCamelCase -->
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <!-- Constantes en UPPER_SNAKE_CASE -->
+        <module name="ConstantName"/>
+
+        <!-- ====== REGLAS DE FORMATO Y SANGRÍA ====== -->
+        <!-- Asegura bloques con llaves -->
+        <module name="NeedBraces"/>
+        <module name="LeftCurly"/>
+        <module name="RightCurly"/>
+        <module name="WhitespaceAround"/>
+        
+        <!-- Control de la sangría (4 espacios) -->
+        <module name="Indentation">
+            <property name="basicOffset" value="4"/>
+            <property name="braceAdjustment" value="0"/>
+            <property name="caseIndent" value="4"/>
+        </module>
+
+        <!-- Espacios requeridos después de comas y operadores -->
+        <module name="WhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        
+        <!-- ====== REGLAS DE BUENAS PRÁCTICAS ====== -->
+        <!-- Prohíbe dejar código comentado o comentarios TODO sin resolver -->
+        <module name="TodoComment">
+            <property name="severity" value="info"/>
+        </module>
+        
+        <!-- Evita comparaciones con literales a la izquierda (ej. 1 == x) -->
+        <module name="EqualsHashCode"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+
+        <!-- Exige el uso de llaves en los if, for, while -->
+        <module name="MissingSwitchDefault"/>
+        <module name="FallThrough"/>
+        
+        <!-- ====== REGLAS DE EXCEPCIONES Y RECURSOS ====== -->
+        <module name="IllegalCatch">
+            <property name="illegalClassNames" value="java.lang.Exception, java.lang.Throwable, java.lang.RuntimeException"/>
+        </module>
+
+        <!-- ====== REGLAS DE IMPORTACIÓN ====== -->
+        <!-- Evita importaciones con comodín (*) -->
+        <module name="AvoidStarImport"/>
+        <!-- Evita importaciones no utilizadas -->
+        <module name="UnusedImports"/>
+        <!-- Asegura el orden alfabético de las importaciones -->
+        <module name="CustomImportOrder">
+            <property name="sortImportsInGroupAlphabetically" value="true"/>
+            <property name="customImportOrderRules" value="STATIC###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE"/>
+        </module>
+
+        <!-- ====== REGLAS DE ESPACIOS EN BLANCO ====== -->
+        <module name="EmptyLineSeparator"/>
+        <module name="NoLineWrap"/>
+        
+    </module>
+</module>

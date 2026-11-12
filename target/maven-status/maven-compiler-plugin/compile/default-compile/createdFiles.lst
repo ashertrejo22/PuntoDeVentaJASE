@@ -17,8 +17,10 @@ org\uacm\puntodeventa\RegistroExitosoController.class
 org\uacm\puntodeventa\PantallaPrincipalController.class
 org\uacm\puntodeventa\FechaValidaController.class
 org\uacm\puntodeventa\EliminarController.class
+org\uacm\puntodeventa\DetalleProductoDescuentosController.class
 org\uacm\puntodeventa\DB\VentaABD.class
 org\uacm\puntodeventa\AlertaCamposController.class
+org\uacm\puntodeventa\VentanaDescuentoController.class
 org\uacm\puntodeventa\CantidadGranelController.class
 org\uacm\puntodeventa\Clases\ItemReporte.class
 org\uacm\puntodeventa\PrimaryController.class
@@ -38,6 +40,7 @@ org\uacm\puntodeventa\AlertaNumerosController.class
 org\uacm\puntodeventa\Clases\Seguridad.class
 org\uacm\puntodeventa\Clases\InformacionProductos.class
 org\uacm\puntodeventa\PantallaPrincipalController$2.class
+org\uacm\puntodeventa\Clases\ProductoPanaderia.class
 org\uacm\puntodeventa\OpcionValidaController.class
 org\uacm\puntodeventa\Clases\ProductoGranel.class
 org\uacm\puntodeventa\AlertaCarritoController.class

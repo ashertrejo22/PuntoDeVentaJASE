@@ -22,9 +22,17 @@ public class DetalleProductoController {
         lblStock.setText(String.valueOf(p.getStock()));
         lblID.setText(String.valueOf(p.getID_producto()));
 
-        if (p.getRutaImag() != null) {
+        if (p.getRutaImag() != null && !p.getRutaImag().isEmpty()) {
+        try {
             imgProducto.setImage(new Image(p.getRutaImag()));
+        } catch (Exception e) {
+            
+            System.out.println("Error al cargar la imagen. La ruta no es válida: " + p.getRutaImag());
+            imgProducto.setImage(null); // Dejamos el espacio en blanco
         }
+    } else {
+        imgProducto.setImage(null);
+    }
     }
 
     @FXML
