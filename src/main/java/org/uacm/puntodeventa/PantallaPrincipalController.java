@@ -42,8 +42,8 @@ public class PantallaPrincipalController implements Initializable {
     @FXML private Label lblTotal;
     private Button btnMonedero;
     @FXML private Button btnReportes;
-    @FXML private Button btnInventario;
     @FXML private Button btnEliminar;
+    @FXML private Button btnDescuentos;
     @FXML private Button btnCobrar;
     @FXML private Button botonMas;
     @FXML private Button botonMenos;
@@ -446,6 +446,22 @@ private void cobrar(ActionEvent event) {
             stage.show();
         } catch (IOException e) {
             mostrarAlertaError("Archivo no encontrado", "No se pudo abrir la ventana de Reportes.");
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    public void abrirDescuentos(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/VentanaDescuento.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Descuentos");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            mostrarAlertaError("Archivo no encontrado", "No se pudo abrir la ventana de Descuentos.");
             e.printStackTrace();
         }
     }

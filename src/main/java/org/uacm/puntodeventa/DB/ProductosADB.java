@@ -31,6 +31,8 @@ public class ProductosADB {
                     producto = new ProductoPerecedero(id, nombre, tipo, stock, precioProv, fechaCad, lote, ruta);
                 } else if ("Granel".equals(tipo)) {
                     producto = new ProductoGranel(id, nombre, tipo, stock, precioProv, unidadMedida, ruta);
+                } else if("Panaderia".equals(tipo)){
+                    producto = new ProductoPanaderia(id, nombre, tipo, stock, precioProv, ruta, unidadMedida);
                 } else {
                     producto = new Producto(id, nombre, tipo, stock, precioProv, ruta);
                 }

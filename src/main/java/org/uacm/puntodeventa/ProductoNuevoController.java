@@ -24,6 +24,7 @@ import org.uacm.puntodeventa.Clases.InformacionProductos;
 import org.uacm.puntodeventa.Clases.Producto;
 import org.uacm.puntodeventa.Clases.ProductoGranel;
 import org.uacm.puntodeventa.Clases.ProductoPerecedero;
+import org.uacm.puntodeventa.Clases.ProductoPanaderia;
 
 public class ProductoNuevoController implements Initializable {
 
@@ -45,7 +46,7 @@ public class ProductoNuevoController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        comboBoxTipPro.getItems().addAll("Normal", "Perecedero", "Granel");
+        comboBoxTipPro.getItems().addAll("Normal", "Perecedero", "Granel", "Panaderia");
         datePickCaducidad.setDisable(true);
 
         comboBoxTipPro.setOnAction(e -> {
@@ -134,9 +135,14 @@ public class ProductoNuevoController implements Initializable {
                 case "Granel":
                     nuevoProducto = new ProductoGranel(idTemporal, nombre, tipo, cantidad, precio, "Kg/Lts", rutaImagenSeleccionada);
                     break;
+                case "Panaderia":
+                    nuevoProducto = new ProductoPanaderia(idTemporal, nombre, tipo, precio, precio, tipo, rutaImagenSeleccionada);
+                    break;
+                        
                 default:
                     nuevoProducto = new Producto(idTemporal, nombre, tipo, cantidad, precio, rutaImagenSeleccionada);
                     break;
+                 
             }
             InformacionProductos.getInstance().agregarProducto(nuevoProducto);
             try {

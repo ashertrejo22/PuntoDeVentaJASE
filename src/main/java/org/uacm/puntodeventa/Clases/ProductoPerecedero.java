@@ -45,7 +45,7 @@ public class ProductoPerecedero extends Producto {
     @Override
     public double getPrecio_venta() {
         double precioNormal = super.getPrecio_venta();
-        if (getFechaCaducidad() != null && getFechaCaducidad().isBefore(LocalDate.now().plusDays(7))) {
+        if (getFechaCaducidad() != null && getFechaCaducidad().isBefore(LocalDate.now().plusDays(8))) {
             double precioRebajado = precioNormal * 0.85;
             return Math.ceil(precioRebajado);
         }

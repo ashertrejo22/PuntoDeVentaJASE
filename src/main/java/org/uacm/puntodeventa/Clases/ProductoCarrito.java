@@ -21,6 +21,10 @@ public class ProductoCarrito {
     public double getCantidad() { return cantidad; }
     public void setCantidad(double cantidad) { this.cantidad = cantidad; }
     
-    public double getTotal() { return precio * cantidad; }
+    public double getTotal() {
+        if(cantidad >=5){
+            return (precio * cantidad) * 0.90;
+        }
+        return precio * cantidad; }
     public double getStock() { return stock; }
 }
