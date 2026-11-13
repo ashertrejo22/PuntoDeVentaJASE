@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: WHITE;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.uacm.puntodeventa.ReporteVentasController">
+   <children>
+      <Pane layoutY="0.0" prefHeight="96.0" prefWidth="700.0" style="-fx-background-color: #00502b;">
+         <children>
+            <Label layoutX="151.0" layoutY="21.0" text="Reporte de ventas" textFill="WHITE">
+               <font>
+                  <Font name="Arial Bold" size="48.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Label layoutX="50.0" layoutY="120.0" style="-fx-font-weight: bold; -fx-font-size: 14;" text="Búsqueda:">
+         <font>
+            <Font name="Arial Bold" size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtBusqueda" layoutX="140.0" layoutY="116.0" prefHeight="28.0" prefWidth="200.0" />
+      <TableView fx:id="tablaVentas" layoutX="40.0" layoutY="162.0" prefHeight="299.0" prefWidth="620.0">
+         <columns>
+            <TableColumn fx:id="colFolio" prefWidth="150.0" text="Folio" />
+            <TableColumn fx:id="colFecha" prefWidth="150.0" text="Fecha" />
+            <TableColumn fx:id="colCantidadProductos" prefWidth="160.0" text="Cantidad de productos" />
+            <TableColumn fx:id="colTotal" prefWidth="158.0" text="Total" />
+         </columns>
+      </TableView>
+      <GridPane layoutX="460.0" layoutY="467.0" prefHeight="25.0" prefWidth="200.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.0" minWidth="10.0" prefWidth="100.5" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="99.5" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label fx:id="lblTotalDia" text="\$0.00" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+               <font>
+                  <Font name="Arial" size="14.0" />
+               </font>
+            </Label>
+            <Label prefHeight="16.0" prefWidth="108.0" text="Total del día:">
+               <font>
+                  <Font name="Arial Bold" size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </GridPane>
+
+   </children>
+</AnchorPane>

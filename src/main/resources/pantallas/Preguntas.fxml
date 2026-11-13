@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane prefHeight="439.0" prefWidth="400" style="-fx-background-color: linear-gradient(to bottom, #1F5D3B, #0F3D2E);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.uacm.puntodeventa.PreguntasController">
+
+    <children>
+        <VBox alignment="TOP_CENTER" prefHeight="451.0" prefWidth="400.0" spacing="15" style="-fx-background-color:#00502b; -fx-padding:25; -fx-background-radius:15;">
+
+            <Label text="PREGUNTAS DE SEGURIDAD" textFill="WHITE">
+                <font><Font name="Arial Bold" size="20" /></font>
+            </Label>
+
+            <Label text="Responde correctamente para recuperar tu contraseña" textFill="WHITE" wrapText="true" />
+
+            <VBox spacing="5">
+                <Label fx:id="p1" textFill="WHITE" />
+                <TextField fx:id="r1" promptText="Escribe tu respuesta" style="-fx-background-radius:10; -fx-padding:8;" />
+            </VBox>
+
+            <VBox spacing="5">
+                <Label fx:id="p2" textFill="WHITE" />
+                <TextField fx:id="r2" promptText="Escribe tu respuesta" style="-fx-background-radius:10; -fx-padding:8;" />
+            </VBox>
+
+            <VBox spacing="5">
+                <Label fx:id="p3" textFill="WHITE" />
+                <TextField fx:id="r3" promptText="Escribe tu respuesta" style="-fx-background-radius:10; -fx-padding:8;" />
+            </VBox>
+
+            <Button onAction="#verificar" prefHeight="40" prefWidth="260" style="-fx-background-color:#146551; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="VERIFICAR RESPUESTAS" />
+
+            <Hyperlink onAction="#volverLogin" style="-fx-text-fill:#64B5F6;" text="Volver al inicio de sesión" />
+
+        </VBox>
+    </children>
+</StackPane>
