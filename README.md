@@ -1,3 +1,4 @@
+PASOS DE EJECUCIÓN
 1.	Descargar el repositorio localmente utilizando.
 2.	Abrir el entorno de desarrollo Apache NetBeans.
 3.	Ir a File > Open Project y seleccionar la carpeta descargada PuntoDeVentaJASE.
