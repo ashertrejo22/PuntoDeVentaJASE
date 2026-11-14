@@ -40,21 +40,23 @@
             </ImageView>
          </children>
       </AnchorPane>
-
-      <!-- MENU DE BOTONES -->
-      <HBox alignment="CENTER" spacing="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0">
-         <children>
-            <Button fx:id="btnInventario" mnemonicParsing="false" onAction="#abrirInventario" prefHeight="26.0" prefWidth="113.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Inventario" textFill="WHITE">
-               <font><Font name="Arial Bold" size="14.0" /></font>
-            </Button>
-            <Button fx:id="btnReportes" mnemonicParsing="false" onAction="#abrirReportes" prefHeight="26.0" prefWidth="113.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Reportes" textFill="WHITE">
-               <font><Font name="Arial Bold" size="14.0" /></font>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#abrirRecargas" prefHeight="26.0" prefWidth="113.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Recargas" textFill="WHITE">
-               <font><Font name="Arial Bold" size="14.0" /></font>
-            </Button>
-         </children>
-      </HBox>
+        <!-- MENU DE BOTONES -->
+              <HBox alignment="CENTER" spacing="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0">
+                 <children>
+                    <Button fx:id="btnInventario" mnemonicParsing="false" onAction="#abrirInventario" prefHeight="26.0" prefWidth="113.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Inventario" textFill="WHITE">
+                       <font><Font name="Arial Bold" size="14.0" /></font>
+                    </Button>
+                    <Button fx:id="btnReportes" mnemonicParsing="false" onAction="#abrirReportes" prefHeight="26.0" prefWidth="113.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Reportes" textFill="WHITE">
+                       <font><Font name="Arial Bold" size="14.0" /></font>
+                    </Button>
+                    <Button mnemonicParsing="false" onAction="#abrirRecargas" prefHeight="26.0" prefWidth="113.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Recargas" textFill="WHITE">
+                       <font><Font name="Arial Bold" size="14.0" /></font>
+                    </Button>
+                    <Button fx:id="btnDescuentos" mnemonicParsing="false" onAction="#abrirDescuentos" prefHeight="26.0" prefWidth="113.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Descuentos" textFill="WHITE">
+                       <font><Font name="Arial Bold" size="14.0" /></font>
+                    </Button>
+                 </children>
+              </HBox>
 
       <!-- LINEA SEPARADORA -->
       <Separator style="-fx-background-color: #00502b;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="155.0" />

@@ -72,6 +72,8 @@ public class PantallaPrincipalController implements Initializable {
     private Label lblSesion;
     @FXML
     private Label lblFecha;
+    @FXML
+    private Button btnDescuentos;
 
     private ObservableList<Producto> list = InformacionProductos.getInstance().getProductos();
     private ObservableList<ProductoCarrito> carritoList = FXCollections.observableArrayList();
@@ -258,9 +260,11 @@ public class PantallaPrincipalController implements Initializable {
         }
 
         if (nivel == 2) {
+            if (btnInventario != null) btnInventario.setDisable(true);
             if (btnReportes != null) btnReportes.setDisable(true);
-            if (btnMonedero != null) btnMonedero.setDisable(true);
-            if (btnCambiar != null) btnCambiar.setDisable(true);
+            if (btnDescuentos != null) btnDescuentos.setDisable(true); // <-- Debe ir aquí adentro
+        } else {
+            if (btnDescuentos != null) btnDescuentos.setDisable(false); // Activo para Administrador (nivel 1)
         }
     }
 
@@ -409,6 +413,22 @@ public class PantallaPrincipalController implements Initializable {
             stage.show();
         } catch (IOException e) {
             mostrarAlertaError("Archivo no encontrado", "No se pudo cargar la pantalla del Ticket.");
+            e.printStackTrace();
+        }
+    }
+    
+    @FXML
+    private void abrirDescuentos(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/VentanaDescuento.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Descuentos");
+            stage.setScene(new Scene(root));
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

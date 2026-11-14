@@ -24,13 +24,13 @@ import org.uacm.puntodeventa.Clases.InformacionProductos;
 import org.uacm.puntodeventa.Clases.Producto;
 import org.uacm.puntodeventa.Clases.ProductoGranel;
 import org.uacm.puntodeventa.Clases.ProductoPerecedero;
+import org.uacm.puntodeventa.Clases.ProductoPanaderia;
 
 public class ProductoNuevoController implements Initializable {
 
     @FXML private TextField txtFieldNomProducto;
     @FXML private TextField txtFielPrecioProv;
     @FXML private ComboBox<String> comboBoxTipPro;
-    @FXML private ComboBox<String> comboBoxCategoria; 
     @FXML private DatePicker datePickCaducidad;
     @FXML private TextField txtFieldCantidad;
     @FXML private Button btnSeleccionarImagen;
@@ -46,11 +46,7 @@ public class ProductoNuevoController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        comboBoxTipPro.getItems().addAll("Normal", "Perecedero", "Granel");
-
-        comboBoxCategoria.getItems().addAll("Limpieza", "Grasas", "Lácteos", "Bebidas", "Abarrotes", "General");
-        comboBoxCategoria.setValue("General"); // Valor por defecto
-
+        comboBoxTipPro.getItems().addAll("Normal", "Perecedero", "Granel", "Panaderia");
         datePickCaducidad.setDisable(true);
 
         comboBoxTipPro.setOnAction(e -> {
@@ -112,14 +108,13 @@ public class ProductoNuevoController implements Initializable {
                 return;
             }
 
-            if (comboBoxTipPro.getValue() == null || comboBoxCategoria.getValue() == null) {
+            if (comboBoxTipPro.getValue() == null) {
                 mostrarMensaje("/pantallas/OpcionValida.fxml");
                 return;
             }
 
             String nombre = txtFieldNomProducto.getText().trim();
             String tipo = comboBoxTipPro.getValue();
-            String categoria = comboBoxCategoria.getValue(); // --- CAPTURAMOS LA CATEGORÍA ---
             LocalDate fecha = null;
 
             if ("Perecedero".equals(tipo)) {
@@ -133,22 +128,21 @@ public class ProductoNuevoController implements Initializable {
 
             Producto nuevoProducto;
 
-            // --- SE PASA LA CATEGORÍA AL CONSTRUCTOR DE CADA TIPO DE PRODUCTO ---
             switch (tipo) {
                 case "Perecedero":
-                    nuevoProducto = new ProductoPerecedero(idTemporal, nombre, tipo, cantidad, precio, fecha, "Lote-001", rutaImagenSeleccionada, categoria);
+                    nuevoProducto = new ProductoPerecedero(idTemporal, nombre, tipo, cantidad, precio, fecha, "Lote-001", rutaImagenSeleccionada, "Perecedero");
                     break;
                 case "Granel":
-                    nuevoProducto = new ProductoGranel(idTemporal, nombre, tipo, cantidad, precio, "Kg/Lts", rutaImagenSeleccionada, categoria);
+                    nuevoProducto = new ProductoGranel(idTemporal, nombre, tipo, cantidad, precio, rutaImagenSeleccionada, "Kg/Lts", "Granel");
+                    break;
+                case "Panaderia":
+                    nuevoProducto = new ProductoPanaderia(idTemporal, nombre, tipo, cantidad, precio, rutaImagenSeleccionada);
                     break;
                 default:
-                    nuevoProducto = new Producto(idTemporal, nombre, tipo, cantidad, precio, rutaImagenSeleccionada, categoria);
+                    nuevoProducto = new Producto(idTemporal, nombre, tipo, cantidad, precio, rutaImagenSeleccionada, "General");
                     break;
             }
-            
-            // Esto guarda en memoria y a su vez invocará a ProductosADB.insertar(...) si está conectado al gestor
             InformacionProductos.getInstance().agregarProducto(nuevoProducto);
-            
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/pantallas/RegistroExitoso.fxml"));
                 Parent root = loader.load();

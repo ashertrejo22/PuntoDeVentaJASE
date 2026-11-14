@@ -20,6 +20,7 @@ import org.uacm.puntodeventa.Clases.InformacionProductos;
 import org.uacm.puntodeventa.Clases.Producto;
 import org.uacm.puntodeventa.Clases.ProductoPerecedero;
 
+
 public class ActualizarController implements Initializable {
 
     @FXML private TextField txtFieldNombre;
@@ -46,8 +47,7 @@ public class ActualizarController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        comboBoxTipoProducto.getItems().addAll("Normal", "Digital", "Perecedero", "Granel");
-        
+        comboBoxTipoProducto.getItems().addAll("Normal", "Digital", "Perecedero", "Granel", "Panaderia");
         datePickerCaducidad.setVisible(false);
 
         comboBoxTipoProducto.setOnAction(e -> {
@@ -79,9 +79,14 @@ public class ActualizarController implements Initializable {
                 datePickerCaducidad.setVisible(false);
             }
             
-            if (productoActual.getRutaImag() != null) { 
+            if (productoActual.getRutaImag() != null && !productoActual.getRutaImag().isEmpty()) {
                 rutaImagenSeleccionada = productoActual.getRutaImag();
-                previewImagen.setImage(new Image(rutaImagenSeleccionada));
+                try {
+                    previewImagen.setImage(new Image(rutaImagenSeleccionada));
+                } catch (Exception e) {
+                    System.out.println("No se pudo cargar la imagen al actualizar: " + rutaImagenSeleccionada);
+                    previewImagen.setImage(null);
+                }
             }
         }
     }

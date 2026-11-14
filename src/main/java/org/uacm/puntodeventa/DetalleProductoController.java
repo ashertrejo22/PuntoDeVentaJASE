@@ -10,7 +10,6 @@ public class DetalleProductoController {
 
     @FXML private Label lblNombre;
     @FXML private Label lblTipo;
-    @FXML private Label lblCategoria;
     @FXML private Label lblPrecio;
     @FXML private Label lblStock;
     @FXML private Label lblID;
@@ -19,19 +18,21 @@ public class DetalleProductoController {
     public void setProducto(Producto p) {
         lblNombre.setText(p.getNombre());
         lblTipo.setText(p.getTipo());
-        lblCategoria.setText(p.getCategoria());
         lblPrecio.setText("$" + p.getPrecio_venta());
         lblStock.setText(String.valueOf(p.getStock()));
         lblID.setText(String.valueOf(p.getID_producto()));
 
-        String rutaBaseDatos = p.getRutaImag();
-        if (rutaBaseDatos != null && !rutaBaseDatos.trim().isEmpty()) {
-            try {
-                imgProducto.setImage(new Image("file:" + rutaBaseDatos));
-            } catch (Exception e) {
-                System.out.println("No se encontró la imagen en: " + rutaBaseDatos);
-            }
+        if (p.getRutaImag() != null && !p.getRutaImag().isEmpty()) {
+        try {
+            imgProducto.setImage(new Image(p.getRutaImag()));
+        } catch (Exception e) {
+            
+            System.out.println("Error al cargar la imagen. La ruta no es válida: " + p.getRutaImag());
+            imgProducto.setImage(null); // Dejamos el espacio en blanco
         }
+    } else {
+        imgProducto.setImage(null);
+    }
     }
 
     @FXML
