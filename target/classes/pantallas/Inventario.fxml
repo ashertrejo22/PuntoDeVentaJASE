@@ -28,7 +28,7 @@
             <TableColumn fx:id="columnaTipo" prefWidth="82.5" text="Tipo" />
         </columns>
       </TableView>
-      <TextField fx:id="txtFieldBuscar" layoutX="305.0" layoutY="102.0" prefHeight="26.0" prefWidth="246.0" promptText="Busqueda por nombre" />
+      <TextField fx:id="txtFieldBuscar" layoutX="289.0" layoutY="102.0" prefHeight="26.0" prefWidth="246.0" promptText="Busqueda por nombre" />
       <Button fx:id="btnNuevo" layoutX="14.0" layoutY="102.0" mnemonicParsing="false" onAction="#click" prefHeight="25.0" prefWidth="76.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Nuevo" textFill="WHITE">
          <font>
             <Font name="Arial Bold" size="12.0" />
@@ -49,5 +49,10 @@
             <Font name="Arial Bold" size="14.0" />
          </font>
       </Label>
+      <Button fx:id="notificacion" layoutX="535.0" layoutY="103.0" mnemonicParsing="false" onAction="#Notificaciones" prefHeight="25.0" prefWidth="113.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Notificaciones" textFill="WHITE">
+         <font>
+            <Font name="Arial Bold" size="12.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

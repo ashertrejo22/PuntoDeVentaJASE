@@ -6,6 +6,7 @@ org\uacm\puntodeventa\NumerosValidosController.class
 org\uacm\puntodeventa\DetalleProductoController.class
 org\uacm\puntodeventa\DB\DetalleABD.class
 org\uacm\puntodeventa\PantallaPrincipalController$1.class
+org\uacm\puntodeventa\Clases\PedidoReabastecimiento.class
 org\uacm\puntodeventa\TipoPagoController.class
 org\uacm\puntodeventa\ActualizarController.class
 org\uacm\puntodeventa\NombreController.class
@@ -36,6 +37,7 @@ org\uacm\puntodeventa\AlertaCobrarController.class
 org\uacm\puntodeventa\Clases\ProductoPerecedero.class
 org\uacm\puntodeventa\FXMLController.class
 org\uacm\puntodeventa\PreguntasController.class
+org\uacm\puntodeventa\ProductosNotificacionesController.class
 org\uacm\puntodeventa\TicketController.class
 AlertaLlenarCamposController.class
 org\uacm\puntodeventa\AlertaNumerosController.class
@@ -48,6 +50,7 @@ org\uacm\puntodeventa\Clases\ProductoGranel.class
 org\uacm\puntodeventa\AlertaCarritoController.class
 org\uacm\puntodeventa\DB\RecargaABD.class
 org\uacm\puntodeventa\Clases\Venta.class
+org\uacm\puntodeventa\Clases\AlertasInventario.class
 org\uacm\puntodeventa\ActualizacionEController.class
 org\uacm\puntodeventa\Clases\RegistroVentas.class
 org\uacm\puntodeventa\InventarioController.class
