@@ -49,6 +49,9 @@
                     <Button fx:id="btnReportes" mnemonicParsing="false" onAction="#abrirReportes" prefHeight="26.0" prefWidth="113.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Reportes" textFill="WHITE">
                        <font><Font name="Arial Bold" size="14.0" /></font>
                     </Button>
+                    <Button fx:id="btnCorteCaja" mnemonicParsing="false" onAction="#abrirCorteCaja" prefHeight="26.0" prefWidth="135.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Corte de Caja" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+                       <font><Font name="Arial Bold" size="14.0" /></font>
+                    </Button>
                     <Button mnemonicParsing="false" onAction="#abrirRecargas" prefHeight="26.0" prefWidth="113.0" style="-fx-background-color: #146551; -fx-background-radius: 25;" text="Recargas" textFill="WHITE">
                        <font><Font name="Arial Bold" size="14.0" /></font>
                     </Button>

@@ -2,6 +2,7 @@ package org.uacm.puntodeventa;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,6 +29,8 @@ import org.uacm.puntodeventa.Clases.InformacionProductos;
 import org.uacm.puntodeventa.Clases.ProductoCarrito;
 import org.uacm.puntodeventa.Clases.Venta;
 import org.uacm.puntodeventa.DB.DetalleABD;
+import org.uacm.puntodeventa.Clases.CorteCaja;
+import org.uacm.puntodeventa.cortecaja.CorteCajaServicio;
 import org.uacm.puntodeventa.DB.VentaABD;
 
 public class PantallaPrincipalController implements Initializable {
@@ -329,6 +332,19 @@ public class PantallaPrincipalController implements Initializable {
             return;
         }
 
+        // BR-3: no se permite vender sin un turno de caja abierto
+        CorteCaja turno;
+        try {
+            turno = new CorteCajaServicio().exigirTurnoAbierto(this.idUsuarioActual);
+        } catch (IllegalStateException e) {
+            mostrarAlerta(e.getMessage());
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            mostrarAlertaError("Error de Base de Datos", "No se pudo consultar el turno de caja.");
+            return;
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/pantallas/tipoPago.fxml"));
             Parent root = loader.load();
@@ -356,13 +372,13 @@ public class PantallaPrincipalController implements Initializable {
                         0.0,
                         metodoFinal,
                         numRastreo,
-                        this.nivelUsuarioActual,
+                        this.idUsuarioActual,
                         this.nombreUsuarioActual
                 );
 
                 try {
                     // Guarda la venta y descuenta el stock en BD y memoria local
-                    int idVenta = VentaABD.insertar(nuevaVenta);
+                    int idVenta = VentaABD.insertar(nuevaVenta, turno.getIdCorte());
                     for (ProductoCarrito item : carritoList) {
                         DetalleABD.insertar(idVenta, item.getId(), item.getCantidad(), item.getPrecio());
                     }
@@ -469,6 +485,11 @@ public class PantallaPrincipalController implements Initializable {
 
     @FXML
     public void abrirReportes(ActionEvent event) {
+        // BR-1: solo el administrador consulta los reportes de ventas
+        if (nivelUsuarioActual != 1) {
+            mostrarAlerta("Solo el administrador puede consultar los reportes de ventas.");
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/ReporteVentas.fxml"));
             Parent root = loader.load();
@@ -479,6 +500,24 @@ public class PantallaPrincipalController implements Initializable {
             stage.show();
         } catch (IOException e) {
             mostrarAlertaError("Archivo no encontrado", "No se pudo abrir la ventana de Reportes.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void abrirCorteCaja(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(PantallaPrincipalController.class.getResource("/pantallas/CorteCaja.fxml"));
+            Parent root = loader.load();
+            CorteCajaController controller = loader.getController();
+            controller.configurarUsuario(this.idUsuarioActual);
+            Stage stage = new Stage();
+            stage.setTitle("Corte de Caja");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            mostrarAlertaError("Archivo no encontrado", "No se pudo abrir la ventana de Corte de Caja.");
             e.printStackTrace();
         }
     }

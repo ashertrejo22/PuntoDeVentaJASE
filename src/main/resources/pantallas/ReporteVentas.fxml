@@ -1,62 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: WHITE;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.uacm.puntodeventa.ReporteVentasController">
-   <children>
-      <Pane layoutY="0.0" prefHeight="96.0" prefWidth="700.0" style="-fx-background-color: #00502b;">
-         <children>
-            <Label layoutX="151.0" layoutY="21.0" text="Reporte de ventas" textFill="WHITE">
-               <font>
-                  <Font name="Arial Bold" size="48.0" />
-               </font>
-            </Label>
-         </children>
-      </Pane>
-      <Label layoutX="50.0" layoutY="120.0" style="-fx-font-weight: bold; -fx-font-size: 14;" text="Búsqueda:">
-         <font>
-            <Font name="Arial Bold" size="14.0" />
-         </font>
-      </Label>
-      <TextField fx:id="txtBusqueda" layoutX="140.0" layoutY="116.0" prefHeight="28.0" prefWidth="200.0" />
-      <TableView fx:id="tablaVentas" layoutX="40.0" layoutY="162.0" prefHeight="299.0" prefWidth="620.0">
-         <columns>
-            <TableColumn fx:id="colFolio" prefWidth="150.0" text="Folio" />
-            <TableColumn fx:id="colFecha" prefWidth="150.0" text="Fecha" />
-            <TableColumn fx:id="colCantidadProductos" prefWidth="160.0" text="Cantidad de productos" />
-            <TableColumn fx:id="colTotal" prefWidth="158.0" text="Total" />
-         </columns>
-      </TableView>
-      <GridPane layoutX="460.0" layoutY="467.0" prefHeight="25.0" prefWidth="200.0">
-         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.0" minWidth="10.0" prefWidth="100.5" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="99.5" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-         </rowConstraints>
-         <children>
-            <Label fx:id="lblTotalDia" text="\$0.00" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </Label>
-            <Label prefHeight="16.0" prefWidth="108.0" text="Total del día:">
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-            </Label>
-         </children>
-      </GridPane>
-
-   </children>
-</AnchorPane>
+<VBox prefHeight="680.0" prefWidth="900.0" style="-fx-background-color: WHITE;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.uacm.puntodeventa.ReporteVentasController">
+    <children>
+        <Pane prefHeight="70.0" style="-fx-background-color: #00502b;">
+            <children>
+                <Label layoutX="25.0" layoutY="12.0" text="Reporte de ventas" textFill="WHITE">
+                    <font>
+                        <Font name="Arial Bold" size="32.0" />
+                    </font>
+                </Label>
+            </children>
+        </Pane>
+        <VBox spacing="10.0">
+            <padding>
+                <Insets bottom="15.0" left="20.0" right="20.0" top="12.0" />
+            </padding>
+            <children>
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #00502b;" text="Filtros" />
+                <HBox alignment="CENTER_LEFT" spacing="8.0" style="-fx-background-color: #f4f4f4; -fx-border-color: #cccccc; -fx-background-radius: 5; -fx-border-radius: 5;">
+                    <padding>
+                        <Insets bottom="10.0" left="12.0" right="12.0" top="10.0" />
+                    </padding>
+                    <children>
+                        <Label minWidth="-Infinity" style="-fx-font-weight: bold;" text="Desde:" />
+                        <DatePicker fx:id="selectorFechaDesde" prefWidth="125.0" />
+                        <Label minWidth="-Infinity" style="-fx-font-weight: bold;" text="Hasta:" />
+                        <DatePicker fx:id="selectorFechaHasta" prefWidth="125.0" />
+                        <Label minWidth="-Infinity" style="-fx-font-weight: bold;" text="Tipo:" />
+                        <ComboBox fx:id="comboTipo" minWidth="-Infinity" prefWidth="110.0" />
+                        <Label minWidth="-Infinity" style="-fx-font-weight: bold;" text="Más vendidos:" />
+                        <Spinner fx:id="spinnerProductos" initialValue="5" max="20" min="1" minWidth="-Infinity" prefWidth="65.0" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="botonConsultar" minWidth="-Infinity" onAction="#alPresionarConsultar" style="-fx-background-color: #146551; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20;" text="Consultar" />
+                    </children>
+                </HBox>
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #00502b;" text="Transacciones (doble clic para ver el comprobante)" />
+                <TableView fx:id="tablaTransacciones" prefHeight="250.0">
+                    <columns>
+                        <TableColumn fx:id="columnaFolio" prefWidth="170.0" text="Folio" />
+                        <TableColumn fx:id="columnaFecha" prefWidth="110.0" text="Fecha" />
+                        <TableColumn fx:id="columnaCajero" prefWidth="160.0" text="Cajero" />
+                        <TableColumn fx:id="columnaDetalle" prefWidth="260.0" text="Detalle" />
+                        <TableColumn fx:id="columnaTotal" prefWidth="140.0" text="Total" />
+                    </columns>
+                </TableView>
+                <Separator />
+                <HBox spacing="20.0">
+                    <children>
+                        <VBox prefWidth="400.0" spacing="6.0">
+                            <children>
+                                <Label style="-fx-font-weight: bold; -fx-text-fill: #00502b;" text="Resumen del periodo" />
+                                <VBox spacing="5.0" style="-fx-background-color: #f4f4f4; -fx-border-color: #cccccc; -fx-background-radius: 5; -fx-border-radius: 5;">
+                                    <padding>
+                                        <Insets bottom="10.0" left="12.0" right="12.0" top="10.0" />
+                                    </padding>
+                                    <children>
+                                        <HBox spacing="10.0">
+                                            <children>
+                                                <Label prefWidth="150.0" style="-fx-font-weight: bold;" text="Total vendido:" />
+                                                <Label fx:id="etiquetaTotalVendido" text="\$0.00" />
+                                            </children>
+                                        </HBox>
+                                        <HBox spacing="10.0">
+                                            <children>
+                                                <Label prefWidth="150.0" style="-fx-font-weight: bold;" text="Transacciones:" />
+                                                <Label fx:id="etiquetaTransacciones" text="0" />
+                                            </children>
+                                        </HBox>
+                                        <HBox spacing="10.0">
+                                            <children>
+                                                <Label prefWidth="150.0" style="-fx-font-weight: bold;" text="Ticket promedio:" />
+                                                <Label fx:id="etiquetaTicketPromedio" text="\$0.00" />
+                                            </children>
+                                        </HBox>
+                                        <HBox spacing="10.0">
+                                            <children>
+                                                <Label prefWidth="150.0" style="-fx-font-weight: bold;" text="Efectivo / Tarjeta:" />
+                                                <Label fx:id="etiquetaFormasPago" text="\$0.00 / \$0.00" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label style="-fx-font-weight: bold; -fx-text-fill: #00502b;" text="Productos más vendidos" />
+                                <ListView fx:id="listaMasVendidos" prefHeight="120.0" />
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                    <padding>
+                        <Insets top="5.0" />
+                    </padding>
+                    <children>
+                        <Label fx:id="etiquetaAviso" style="-fx-text-fill: #555555;" />
+                        <Region HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</VBox>

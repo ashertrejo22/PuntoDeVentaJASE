@@ -5,10 +5,18 @@ import java.sql.*;
 import java.time.format.DateTimeFormatter;
 
 public class VentaABD {
-public static int insertar(Venta venta) throws SQLException {
+/**
+     * Inserta una venta ligada al turno de caja abierto que la cobra (regla BR-3).
+     *
+     * @param venta   venta a registrar
+     * @param idCorte turno abierto del cajero
+     * @return el id_venta generado
+     * @throws SQLException si falla la inserción
+     */
+    public static int insertar(Venta venta, int idCorte) throws SQLException {
         // 1. Asegúrate de que id_usuario tenga un signo de interrogación (?), NO un 1
-        String sql = "INSERT INTO Venta (folio, fecha, total_a_pagar, id_usuario, metodo_pago, num_rastreo) " +
-                     "VALUES (?, ?, ?, ?, ?, ?)"; 
+        String sql = "INSERT INTO Venta (folio, fecha, total_a_pagar, id_usuario, metodo_pago, num_rastreo, id_corte) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)"; 
                      
         try (Connection conn = ConexionBD.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -25,6 +33,7 @@ public static int insertar(Venta venta) throws SQLException {
             
             pstmt.setString(5, venta.getMetodoPago());
             pstmt.setString(6, venta.getNumeroRastreo());
+            pstmt.setInt(7, idCorte);
 
             pstmt.executeUpdate();
 

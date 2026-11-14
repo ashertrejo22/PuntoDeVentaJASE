@@ -62,4 +62,26 @@ public class UsuarioABD {
         }
         return null; // Retorna null si las credenciales son incorrectas
     }
+
+    /**
+     * Obtiene el nombre de un usuario a partir de su identificador.
+     *
+     * @param idUsuario identificador del usuario
+     * @return el nombre registrado
+     * @throws SQLException           si falla la consulta
+     * @throws java.util.NoSuchElementException si no existe el usuario
+     */
+    public static String obtenerNombre(int idUsuario) throws SQLException {
+        String sql = "SELECT nombre FROM Usuario WHERE id_usuario = ?";
+        try (Connection conn = ConexionBD.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idUsuario);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("nombre");
+                }
+                throw new java.util.NoSuchElementException("No existe el usuario con id " + idUsuario);
+            }
+        }
+    }
 }

@@ -56,12 +56,48 @@ public class IniciarBD {
             "    metodo_pago TEXT," +
             "    num_rastreo TEXT DEFAULT 'N/A'," +
             "    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)" +
+            ");" +
+            "CREATE TABLE IF NOT EXISTS CorteCaja (" +
+            "    id_corte INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "    folio TEXT NOT NULL UNIQUE," +
+            "    id_usuario INTEGER NOT NULL," +
+            "    fecha_apertura TEXT NOT NULL," +
+            "    fondo_inicial REAL NOT NULL," +
+            "    fecha_cierre TEXT," +
+            "    efectivo_esperado REAL," +
+            "    efectivo_contado REAL," +
+            "    diferencia REAL," +
+            "    estado TEXT NOT NULL," +
+            "    observaciones TEXT," +
+            "    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)" +
+            ");" +
+            "CREATE TABLE IF NOT EXISTS MovimientoCaja (" +
+            "    id_movimiento INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "    id_corte INTEGER NOT NULL," +
+            "    tipo TEXT NOT NULL," +
+            "    monto REAL NOT NULL," +
+            "    motivo TEXT," +
+            "    fecha TEXT NOT NULL," +
+            "    FOREIGN KEY (id_corte) REFERENCES CorteCaja(id_corte)" +
+            ");" +
+            "CREATE TABLE IF NOT EXISTS ConteoEfectivo (" +
+            "    id_corte INTEGER NOT NULL," +
+            "    denominacion TEXT NOT NULL," +
+            "    cantidad INTEGER NOT NULL," +
+            "    PRIMARY KEY (id_corte, denominacion)," +
+            "    FOREIGN KEY (id_corte) REFERENCES CorteCaja(id_corte)" +
             ");";
 
         try (Connection conn = ConexionBD.getConnection();
              Statement stmt = conn.createStatement()) {
             
-            stmt.execute(sql); 
+            // Cada CREATE TABLE se ejecuta por separado: el driver SQLite solo corre la primera
+            // sentencia cuando se le entregan varias juntas en un mismo execute.
+            for (String sentencia : sql.split(";")) {
+                if (!sentencia.trim().isEmpty()) {
+                    stmt.execute(sentencia);
+                }
+            }
             
             // SEGURIDAD EXTRA: Evita que el programa falle si la BD ya existía sin las nuevas columnas
             try {
@@ -75,6 +111,18 @@ public class IniciarBD {
             try {
                 stmt.execute("ALTER TABLE Venta ADD COLUMN num_rastreo TEXT DEFAULT 'N/A';");
             } catch (SQLException ex) { }
+
+            // Corte de Caja: cada venta queda ligada al turno que la cobró
+            try {
+                stmt.execute("ALTER TABLE Venta ADD COLUMN id_corte INTEGER REFERENCES CorteCaja(id_corte);");
+            } catch (SQLException ex) { }
+
+            // Fechas antiguas guardadas como milisegundos: sin convertirlas no aparecerían en los reportes
+            for (String tabla : new String[] {"Venta", "Recargas"}) {
+                stmt.executeUpdate("UPDATE " + tabla + " SET fecha = date(CAST(fecha AS INTEGER) / 1000, "
+                        + "'unixepoch', 'localtime') WHERE fecha NOT LIKE '____-__-__%' "
+                        + "AND CAST(fecha AS INTEGER) > 0");
+            }
 
             System.out.println("Tablas creadas y actualizadas correctamente.");
         } catch (SQLException e) {
